@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Автоклиматсервис — Автосервис, Астрахань</title>
+<meta name="description" content="Диагностика, ремонт ходовой, ТО, шиномонтаж. Называем цену до работы.">
+<style>
+  :root{
+    --ink:#12161c; --muted:#6b7684; --line:#e6e9ee; --bg:#ffffff; --soft:#f6f9fc;
+    --accent:#1f4e79; --accent-dark:#163a5a; --radius:14px;
+    --shadow:0 1px 2px rgba(18,22,28,.04), 0 8px 24px rgba(18,22,28,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-.02em}
+  p{margin:0}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  .btn{display:inline-block;padding:14px 22px;border-radius:10px;font-weight:600;white-space:nowrap;
+    transition:transform .12s ease, background .2s ease, box-shadow .2s ease}
+  .btn-main{background:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.16)}
+  .btn-main:hover{background:var(--accent-dark);transform:translateY(-1px)}
+  .btn-ghost{border:1.5px solid var(--line);background:#fff}
+  .btn-ghost:hover{border-color:var(--ink)}
+
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 0}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:-.03em}
+  .brand i{width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center;
+    color:#fff;font-style:normal;font-size:15px;font-weight:800;flex:none}
+  .bar .tel{font-weight:600;font-size:15px}
+  @media(max-width:640px){.bar .tel{font-size:13px}}
+
+  .hero{padding:64px 0 56px;background:var(--soft);border-bottom:1px solid var(--line)}
+  .hero h1{font-size:clamp(29px,4.4vw,50px);max-width:17ch}
+  .hero .lead{margin-top:18px;font-size:clamp(16px,1.6vw,19px);color:var(--muted);max-width:52ch}
+  .hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+  .tag{display:inline-block;margin-bottom:20px;padding:6px 12px;border-radius:999px;background:#fff;
+    border:1px solid var(--line);font-size:13px;color:var(--muted)}
+  .meta{margin-top:16px;font-size:14px;color:var(--muted)}
+
+  .nums{display:grid;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+  .nums div{background:#fff;padding:26px 24px}
+  .nums b{display:block;font-size:clamp(22px,2.8vw,32px);letter-spacing:-.03em}
+  .nums span{color:var(--muted);font-size:14px}
+  @media(min-width:700px){.nums{grid-template-columns:repeat(4,1fr)}}
+
+  section{padding:64px 0}
+  section h2{font-size:clamp(23px,2.6vw,32px);margin-bottom:10px}
+  section .sub{color:var(--muted);max-width:56ch}
+
+  .cards{display:grid;gap:18px;margin-top:34px}
+  @media(min-width:720px){.cards{grid-template-columns:1fr 1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;
+    box-shadow:var(--shadow)}
+  .card h3{font-size:18px;margin-bottom:8px}
+  .card p{color:var(--muted);font-size:15px}
+
+  .band{background:var(--soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .contact{display:grid;gap:28px;align-items:center}
+  @media(min-width:800px){.contact{grid-template-columns:1.1fr .9fr}}
+  .contact h2{font-size:clamp(24px,3vw,36px)}
+  .contact p{color:var(--muted);margin-top:12px;max-width:44ch}
+  .phone-big{display:block;font-size:clamp(24px,3.4vw,38px);font-weight:800;letter-spacing:-.03em;
+    color:var(--accent);margin-top:20px}
+  .phone-big:hover{color:var(--accent-dark)}
+
+  footer{padding:34px 0;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+  .foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="brand"><i>А</i>Автоклиматсервис</div>
+    <a class="tel" href="tel:+78512611305">+7 (851) 261-13-05</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="tag">Автосервис · Астрахань</span>
+    <h1>Починим и объясним, что было</h1>
+    <p class="lead">Диагностика, ремонт ходовой, ТО и шиномонтаж. Называем цену до начала работ.</p>
+    <div class="cta">
+      <a class="btn btn-main" href="tel:+78512611305">Записаться на ремонт</a>
+      <a class="btn btn-ghost" href="#services">Узнать цену</a>
+    </div>
+    <p class="meta">📍 Астрахань</p>
+  </div>
+</div>
+
+<div class="nums">
+  <div class="wrap" style="display:contents">
+      <div><b>30 мин</b><span>экспресс-замена масла</span></div>
+      <div><b>2 года</b><span>гарантия на работы</span></div>
+      <div><b>1 день</b><span>типовой ремонт</span></div>
+      <div><b>с 9:00</b><span>принимаем машины</span></div>
+  </div>
+</div>
+
+<section id="services">
+  <div class="wrap">
+    <h2>Что мы делаем</h2>
+    <p class="sub">Основные услуги. Если не нашли нужное — позвоните, подскажем.</p>
+    <div class="cards">
+      <article class="card">
+        <h3>Компьютерная диагностика</h3>
+        <p>Считываем ошибки по всем блокам, объясняем простыми словами.</p>
+      </article>
+      <article class="card">
+        <h3>Ремонт ходовой</h3>
+        <p>Подвеска, тормоза, рулевое. Сначала дефектовка, потом ремонт.</p>
+      </article>
+      <article class="card">
+        <h3>Техобслуживание</h3>
+        <p>Замена масла, фильтров, жидкостей. По регламенту производителя.</p>
+      </article>
+      <article class="card">
+        <h3>Шиномонтаж</h3>
+        <p>Балансировка, правка дисков, сезонная смена колёс.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<div class="band">
+  <section>
+    <div class="wrap contact">
+      <div>
+        <h2>Позвоните — ответим на вопросы</h2>
+        <p>Расскажем про услуги, сроки и цену. Без навязывания и звонков «просто так».</p>
+        <a class="phone-big" href="tel:+78512611305">+7 (851) 261-13-05</a>
+      </div>
+      <div>
+        <a class="btn btn-main" style="width:100%;text-align:center" href="tel:+78512611305">Записаться на ремонт</a>
+        <p style="margin-top:14px;font-size:14px;color:var(--muted);text-align:center">
+          Город: Астрахань
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap foot">
+    <span>© Автоклиматсервис, Астрахань</span>
+    <a href="tel:+78512611305">+7 (851) 261-13-05</a>
+  </div>
+</footer>
+
+</body>
+</html>

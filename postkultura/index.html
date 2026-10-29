@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Посткультура — кафе в Калуге · Кафе</title>
+<meta name="description" content="Посткультура в Калуге: Кафе. Домашняя кухня, свежая выпечка, кофе. +7 910 544-98-08.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23B3541E'/%3E%3Ctext x='16' y='23' font-size='19' font-family='Georgia' fill='%23FBF3E8' text-anchor='middle'%3E%C2%B7%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF3E8; --cream-2:#F3E7D4; --ink:#1E1710; --ink-soft:#6E6154;
+    --rust:#B3541E; --rust-dark:#8C3F13; --gold:#C98A2E; --line:#1E1710;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;
+    font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--rust);color:var(--cream)}
+  .mono{font-family:'IBM Plex Mono',monospace}
+  .display{font-family:'Oswald',sans-serif}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  .pole{height:8px;background:repeating-linear-gradient(-45deg,var(--rust) 0 14px,var(--cream) 14px 28px)}
+
+  header{position:sticky;top:0;z-index:50;background:var(--ink);color:var(--cream)}
+  .head-in{display:flex;align-items:center;justify-content:space-between;gap:14px;height:62px}
+  .logo{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:var(--cream)}
+  .logo b{font-family:'Oswald';font-weight:600;font-size:21px;letter-spacing:.06em;text-transform:uppercase}
+  .logo span{font-family:'IBM Plex Mono';font-size:9.5px;letter-spacing:.18em;color:rgba(251,243,232,.55)}
+  .head-tel{font-family:'IBM Plex Mono';font-size:13.5px;font-weight:500;color:var(--cream);text-decoration:none;white-space:nowrap}
+  .head-tel:hover{color:var(--gold)}
+  .cta{background:var(--rust);color:var(--cream);font-family:'Oswald';font-weight:600;font-size:14px;
+    letter-spacing:.09em;text-transform:uppercase;text-decoration:none;padding:11px 18px;transition:background .15s}
+  .cta:hover{background:var(--rust-dark)}
+  @media(max-width:640px){.head-tel{display:none}.logo span{display:none}}
+
+  .hero{padding:74px 0 62px;border-bottom:2px solid var(--line)}
+  .kicker{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--rust);margin-bottom:18px}
+  h1{font-family:'Oswald';font-weight:700;font-size:clamp(40px,8.5vw,88px);line-height:.98;text-transform:uppercase}
+  h1 span{color:var(--rust)}
+  .hero-sub{margin-top:22px;max-width:540px;font-size:clamp(17px,1.9vw,20px)}
+  .hero-sub b{background:var(--cream-2);padding:0 5px;font-weight:600}
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:13px;margin-top:32px}
+  .btn{font-family:'Oswald';font-weight:600;font-size:15px;letter-spacing:.08em;text-transform:uppercase;
+    text-decoration:none;display:inline-flex;align-items:center;gap:10px;padding:15px 28px;
+    border:2px solid var(--ink);transition:transform .12s,box-shadow .12s;box-shadow:5px 5px 0 var(--ink)}
+  .btn:active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--ink)}
+  .btn-red{background:var(--rust);color:var(--cream)}
+  .btn-ghost{background:var(--cream);color:var(--ink)}
+  .hero-facts{display:flex;flex-wrap:wrap;gap:8px 30px;margin-top:36px;font-family:'IBM Plex Mono';
+    font-size:12px;color:var(--ink-soft);letter-spacing:.05em}
+  .hero-facts b{color:var(--ink)}
+
+  section{padding:64px 0}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:34px}
+  .sec-title{font-family:'Oswald';font-weight:600;font-size:clamp(26px,3.6vw,38px);text-transform:uppercase;line-height:1.05}
+  .sec-n{font-family:'IBM Plex Mono';font-size:12px;color:var(--rust);letter-spacing:.14em}
+
+  .price-list{background:var(--cream);border:2px solid var(--ink)}
+  .price-row{display:flex;align-items:baseline;gap:10px;padding:18px 24px;
+    border-bottom:1.5px solid rgba(30,23,16,.18);flex-wrap:wrap}
+  .price-row:last-child{border-bottom:none}
+  .price-row .n{font-family:'Oswald';font-weight:500;font-size:19px;text-transform:uppercase;flex:0 1 auto;min-width:0}
+  .price-row .n small{display:block;font-family:'IBM Plex Sans';font-size:12.5px;text-transform:none;
+    color:var(--ink-soft);letter-spacing:0;font-weight:400;margin-top:2px}
+  .price-row .d{flex:1 0 24px;border-bottom:2px dotted rgba(30,23,16,.35);transform:translateY(-5px);min-width:24px}
+  .price-row .p{font-family:'Oswald';font-weight:600;font-size:20px;flex:none;margin-left:auto}
+  .price-hot{background:var(--ink);color:var(--cream)}
+  .price-hot .p{color:var(--gold)}
+  .price-hot .d{border-color:rgba(251,243,232,.4)}
+  .price-hot .n small{color:rgba(251,243,232,.6)}
+  .price-note{font-family:'IBM Plex Mono';font-size:11px;color:var(--ink-soft);margin-top:14px;letter-spacing:.04em}
+
+  .why{background:var(--ink);color:var(--cream)}
+  .why .sec-title{color:var(--cream)}
+  .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .why-card{border:1.5px solid rgba(251,243,232,.25);padding:24px}
+  .why-card b{font-family:'Oswald';font-weight:500;font-size:18px;text-transform:uppercase;display:block;
+    margin-bottom:8px;color:var(--gold)}
+  .why-card span{font-size:14.5px;color:rgba(251,243,232,.75)}
+  @media(max-width:820px){.why-grid{grid-template-columns:1fr}}
+
+  .book{background:var(--cream-2);border-top:2px solid var(--line)}
+  .book-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  @media(max-width:820px){.book-grid{grid-template-columns:1fr}}
+  .big-tel{font-family:'Oswald';font-weight:600;font-size:clamp(28px,4.6vw,42px);color:var(--rust);
+    text-decoration:none;display:inline-block;margin:4px 0 20px;letter-spacing:.02em}
+  .big-tel:hover{color:var(--rust-dark)}
+  .rows{display:flex;flex-direction:column;gap:12px;font-size:15px}
+  .rows .r{display:flex;gap:12px;align-items:baseline}
+  .rows .k{font-family:'IBM Plex Mono';font-size:10.5px;letter-spacing:.16em;color:var(--ink-soft);
+    width:100px;flex:none;text-transform:uppercase}
+  .rows a{color:var(--rust);text-decoration:none;border-bottom:1px dashed rgba(179,84,30,.5)}
+  .steps{display:flex;flex-direction:column;border:2px solid var(--ink);background:var(--cream)}
+  .step{display:flex;gap:18px;padding:20px 22px;border-bottom:1.5px solid rgba(30,23,16,.18);align-items:baseline}
+  .step:last-child{border-bottom:none}
+  .step .num{font-family:'Oswald';font-weight:700;font-size:26px;color:var(--rust);flex:none}
+  .step b{display:block;font-family:'Oswald';font-weight:500;font-size:17px;text-transform:uppercase}
+  .step span{font-size:14px;color:var(--ink-soft)}
+
+  footer{background:var(--ink);color:rgba(251,243,232,.6);padding:26px 0 34px;font-size:12px}
+  .foot-in{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,150%);background:var(--ink);
+    color:var(--cream);border:1.5px solid var(--gold);font-family:'IBM Plex Mono';font-size:13px;
+    padding:14px 24px;z-index:100;transition:transform .35s cubic-bezier(.2,.9,.3,1.2);max-width:90vw;text-align:center}
+  .toast.show{transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head-in">
+    <a class="logo" href="#top"><b>Посткультура</b><span>кафе · Калуга</span></a>
+    <a class="head-tel" href="tel:79105449808">+7 910 544-98-08</a>
+    <a class="cta" href="#book">Забронировать</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero" style="padding-top:68px">
+    <div class="wrap">
+      <div class="kicker">Кафе · Калуга</div>
+      <h1>Готовим так,<br>что <span>возвращаются</span></h1>
+      <p class="hero-sub">Домашняя кухня, свежая выпечка и кофе, который не хочется разбавлять.
+        Заходите на обед или заберите с собой — <b>соберём за 10 минут</b>.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-red" href="tel:79105449808">☎ +7 910 544-98-08</a>
+        <a class="btn btn-ghost" href="#menu">Посмотреть меню</a>
+      </div>
+      <div class="hero-facts">
+        <span>завтраки · <b>весь день</b></span>
+        <span>обед · <b>первое и второе</b></span>
+        <span>навынос · <b>без ожидания</b></span>
+      </div>
+    </div>
+  </section>
+  <div class="pole"></div>
+
+  <section id="menu">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n mono">01 /</span><h2 class="sec-title">Меню</h2></div>
+      <div class="price-list">
+        <div class="price-row">
+          <span class="n">Завтрак<small>сырники, каша, омлет</small></span><span class="d"></span>
+          <span class="p">от 250 ₽</span>
+        </div>
+        <div class="price-row price-hot">
+          <span class="n">Бизнес-ланч<small>первое, второе, напиток</small></span><span class="d"></span>
+          <span class="p">350 ₽</span>
+        </div>
+        <div class="price-row">
+          <span class="n">Первое блюдо<small>борщ, суп дня, щи</small></span><span class="d"></span>
+          <span class="p">от 220 ₽</span>
+        </div>
+        <div class="price-row">
+          <span class="n">Горячее<small>котлета, рыба, курица с гарниром</small></span><span class="d"></span>
+          <span class="p">от 320 ₽</span>
+        </div>
+        <div class="price-row">
+          <span class="n">Кофе<small>американо, капучино, латте</small></span><span class="d"></span>
+          <span class="p">от 150 ₽</span>
+        </div>
+        <div class="price-row">
+          <span class="n">Выпечка и десерты<small>своя пекарня, готовим утром</small></span><span class="d"></span>
+          <span class="p">от 120 ₽</span>
+        </div>
+      </div>
+      <p class="price-note">* Полное меню с ценами — по телефону или в зале. Навынос и доставка — уточняйте при заказе.</p>
+    </div>
+  </section>
+
+  <section class="why">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n mono" style="color:#C98A2E">02 /</span><h2 class="sec-title">Почему возвращаются</h2></div>
+      <div class="why-grid">
+        <div class="why-card"><b>Готовим утром</b><span>Выпечка и супы — сегодняшние, не вчерашние. Если закончилось, значит, правда было свежее.</span></div>
+        <div class="why-card"><b>Обед без ожидания</b><span>В обеденный перерыв важно успеть. Скажите — соберём за 10 минут, поедите или заберёте с собой.</span></div>
+        <div class="why-card"><b>Посадим компанию</b><span>День рождения, встречу, коллектив на обед — предупредите, накроем стол на нужное число.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pole"></div>
+  <section class="book" id="book">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-n mono">03 /</span><h2 class="sec-title">Как найти</h2></div>
+      <div class="book-grid">
+        <div>
+          <a class="big-tel" href="tel:79105449808">+7 910 544-98-08</a>
+          <div class="rows">
+            <div class="r"><span class="k">Адрес</span><span>улица Кирова 23</span></div>
+            <div class="r"><span class="k">Город</span><span>Калуга</span></div>
+            <div class="r"><span class="k">Часы</span><span>уточните по телефону — работаем каждый день</span></div>
+            <div class="r"><span class="k">Связь</span><span><a href="https://wa.me/79105449808" target="_blank" rel="noopener">WhatsApp</a></span></div>
+          </div>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="num">1</span><div><b>Позвоните</b><span>Скажите, на какое время и сколько человек — забронируем стол.</span></div></div>
+          <div class="step"><span class="num">2</span><div><b>Приходите</b><span>Стол накрыт к вашему времени, ждать не нужно.</span></div></div>
+          <div class="step"><span class="num">3</span><div><b>Закажите на вынос</b><span>Нужно быстро — соберём и упакуем так, чтобы довезли горячим.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-in">
+    <span>© Посткультура · Калуга</span>
+    <span class="mono">Макет собран для «Посткультура» — часы и цены уточним при наполнении</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  'use strict';
+  var toast = document.getElementById('toast'), t;
+  function show(m){ toast.textContent = m; toast.classList.add('show'); clearTimeout(t);
+    t = setTimeout(function(){ toast.classList.remove('show'); }, 4000); }
+  var seen = false;
+  addEventListener('scroll', function(){
+    if(seen || scrollY < innerHeight*2.5) return;
+    seen = true; show('☎ Бронь столика: +7 910 544-98-08');
+  }, {passive:true});
+})();
+</script>
+</body>
+</html>
