@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Реестр закупок: чат-боты в MAX — 2026</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#2a3341;
+  --txt:#e6edf3; --dim:#8b98a8; --acc:#4da3ff; --ok:#3fb950; --warn:#d29922; --bad:#f85149;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.55 -apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding:28px 20px 80px}
+.wrap{max-width:1240px;margin:0 auto}
+h1{font-size:27px;margin:0 0 6px;letter-spacing:-.3px}
+.sub{color:var(--dim);font-size:14px;margin-bottom:26px}
+.sub b{color:var(--acc)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:26px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stat .n{font-size:24px;font-weight:700;letter-spacing:-.5px}
+.stat .l{color:var(--dim);font-size:12px;margin-top:3px}
+.stat.hi .n{color:var(--ok)}
+
+/* filters */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.filters input,.filters select{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:9px 12px;font-size:14px;outline:none}
+.filters input{flex:1;min-width:200px}
+.filters input:focus,.filters select:focus{border-color:var(--acc)}
+.count{color:var(--dim);font-size:13px;margin-bottom:10px}
+
+/* table */
+.tblwrap{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:34px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--panel2);text-align:left;padding:11px 12px;font-weight:600;color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#1a2130}
+.sum{font-weight:700;white-space:nowrap;color:var(--ok)}
+.sum.unk{color:var(--dim);font-weight:400;font-size:12.5px}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11.5px;white-space:nowrap}
+.t-done{background:#3a1d1d;color:#ff9b9b}
+.t-open{background:#1d3a26;color:#7ee2a0}
+.t-req{background:#3a331d;color:#e8d48b}
+.t-q{background:#1d2f3a;color:#8bd0f0}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+.note{color:var(--dim);font-size:12px;display:block;margin-top:3px}
+
+h2{font-size:19px;margin:38px 0 14px;letter-spacing:-.2px}
+h2 .num{color:var(--acc);margin-right:7px}
+
+/* market */
+.mkt{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:15px 17px}
+.card h3{margin:0 0 4px;font-size:15px}
+.card .who{color:var(--dim);font-size:12px;margin-bottom:10px}
+.card ul{margin:0;padding-left:17px;font-size:13.5px}
+.card li{margin-bottom:4px}
+.card .p{color:var(--ok);font-weight:600}
+
+/* steps */
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;position:relative;padding:0 0 20px 44px;border-left:2px solid var(--line);margin-left:14px}
+.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+.steps li::before{content:counter(s);position:absolute;left:-15px;top:-2px;width:28px;height:28px;border-radius:50%;background:var(--acc);color:#04101f;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.steps b{display:block;margin-bottom:3px}
+.steps span{color:var(--dim);font-size:13.5px}
+
+.warnbox{background:#2a1f14;border:1px solid #5c4520;border-radius:10px;padding:14px 17px;margin:18px 0;font-size:14px}
+.warnbox b{color:var(--warn)}
+.okbox{background:#14251a;border:1px solid #2a5138;border-radius:10px;padding:14px 17px;margin:18px 0;font-size:14px}
+.okbox b{color:var(--ok)}
+
+.src{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.src a{background:var(--panel);border:1px solid var(--line);padding:7px 13px;border-radius:7px;font-size:13px}
+footer{margin-top:44px;color:var(--dim);font-size:12.5px;border-top:1px solid var(--line);padding-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Реестр закупок: чат-боты и мини-приложения в MAX</h1>
+<div class="sub">Собрано вручную по агрегаторам и ЕИС · дата сбора <b>31.10.2026</b> · источники указаны у каждой строки</div>
+
+<div class="stats">
+  <div class="stat"><div class="n">13</div><div class="l">закупок найдено</div></div>
+  <div class="stat hi"><div class="n">183,6 млн ₽</div><div class="l">подтверждённый объём</div></div>
+  <div class="stat hi"><div class="n">180 000 ₽</div><div class="l">макс. цена малой закупки</div></div>
+  <div class="stat"><div class="n">1</div><div class="l">открыт набор подрядчиков</div></div>
+  <div class="stat"><div class="n">от 5 000 ₽</div><div class="l">нижняя планка рынка</div></div>
+</div>
+
+<div class="okbox">
+<b>Главный вывод:</b> рынок существует и оплачивается из бюджета. Школа в деревне закупила бота в MAX за <b>180 000 ₽</b> без конкурса, за два дня подачи. Это не «продай идею» — это «приди на готовую заявку».
+</div>
+
+<div class="filters">
+  <input id="q" type="text" placeholder="Поиск по заказчику, предмету, региону...">
+  <select id="fsum">
+    <option value="">Любая сумма</option>
+    <option value="known">Только с известной суммой</option>
+    <option value="small">До 200 000 ₽</option>
+    <option value="big">Свыше 200 000 ₽</option>
+  </select>
+  <select id="fstat">
+    <option value="">Любой статус</option>
+    <option value="open">Можно подать сейчас</option>
+    <option value="done">Завершённые (для анализа)</option>
+  </select>
+</div>
+<div class="count" id="cnt"></div>
+
+<div class="tblwrap">
+<table>
+<thead>
+<tr>
+  <th>Заказчик / предмет</th>
+  <th>Сумма</th>
+  <th>Тип закупки</th>
+  <th>Даты</th>
+  <th>Статус</th>
+  <th>Регион</th>
+</tr>
+</thead>
+<tbody id="tb"></tbody>
+</table>
+</div>
+
+<h2><span class="num">2</span>Сколько платит рынок (проверено по живым сайтам)</h2>
+<div class="mkt">
+  <div class="card">
+    <h3>Бот-ателье</h3>
+    <div class="who">botatelie.ru · одиночка, Москва, Python</div>
+    <ul>
+      <li>Заявки — <span class="p">25 000 ₽</span> (5–7 дн.)</li>
+      <li>Запись и статусы — <span class="p">40 000 ₽</span></li>
+      <li>С CRM — <span class="p">от 60 000 ₽</span></li>
+      <li>Поддержка — <span class="p">3 000 ₽/мес</span></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>БотыМАКС</h3>
+    <div class="who">botymax.ru · работает с бюджетниками</div>
+    <ul>
+      <li>Типовой бот — <span class="p">5 000 ₽</span> (1–2 дн.)</li>
+      <li>С модулями — <span class="p">от 8 000 ₽</span></li>
+      <li>Поддержка — <span class="p">от 990 ₽/мес</span></li>
+      <li>Принимает договор, счёт, ЭДО, казначейство</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>dalab.ru</h3>
+    <div class="who">от 35 000 ₽ · 5–10 дней</div>
+    <ul>
+      <li>Заявки, уведомления, статусы</li>
+      <li>Интеграция с CRM и 1С</li>
+      <li>Мини-приложения</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Max-Основа</h3>
+    <div class="who">max-osnova.ru · верхний сегмент</div>
+    <ul>
+      <li>Бот под ключ — <span class="p">от 150 000 ₽</span></li>
+      <li>Миграция из Telegram — <span class="p">от 150 000 ₽</span></li>
+      <li>15 отраслевых решений</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>aiorkestrator.ru</h3>
+    <div class="who">от 50 000 ₽ · 1 неделя</div>
+    <ul>
+      <li>Заявки, запись, уведомления</li>
+      <li>Связка с CRM</li>
+      <li>Цена фиксируется после ТЗ</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Дыра в рынке</h3>
+    <div class="who">твоя зона</div>
+    <ul>
+      <li>Между 5 000 ₽ (шаблон) и 150 000 ₽ (агентство) — <span class="p">пусто</span></li>
+      <li>Твоя цена: <span class="p">15 000 – 40 000 ₽</span></li>
+      <li>Аргумент: живой человек на связи + быстрый срок</li>
+    </ul>
+  </div>
+</div>
+
+<h2><span class="num">3</span>Как заходить в закупки</h2>
+<ol class="steps">
+  <li><b>Самозанятость через «Мой налог»</b><span>Бесплатно, 15 минут. Право участвовать в 44-ФЗ подтверждено письмом Минфина от 24.04.2025 № 24-06-09/41454 (п. 4 ст. 3 закона 44-ФЗ: участник — любое лицо).</span></li>
+  <li><b>ЭЦП для физлица</b><span>От 2 400 ₽ (Контур). Нужна для подписи заявок на ЭТП. Без неё в торги не зайти.</span></li>
+  <li><b>Регистрация в ЕИС + на площадках</b><span>zakupki.gov.ru и 2–3 ЭТП. Бесплатно, 1–2 дня, но требует внимательности к формам.</span></li>
+  <li><b>Регистрация профиля на business.max.ru</b><span>Верификация организации/ИП/самозанятого. Без верифицированного профиля бота не создать.</span></li>
+  <li><b>Мониторинг закупок</b><span>Ищи по словам: «чат-бот MAX», «мессенджер МАКС», «мини-приложение MAX». Проверяй каждое утро — окно подачи часто 2–5 дней.</span></li>
+  <li><b>Подача заявки</b><span>Документы: заявка, декларации, согласие, иногда расчёт цены. Ошибка в одном пункте = отказ. Первый раз закладывай 3–4 часа.</span></li>
+</ol>
+
+<div class="warnbox">
+<b>Честные предупреждения:</b><br>
+• Бюджет платит через 2–8 недель после акта. До четверга закупки денег не дадут.<br>
+• Заказчик вправе требовать опыт — читай извещение, не подавай вслепую.<br>
+• «Закупка малого объёма» — самый лёгкий вход, но и там нужна корректная заявка.<br>
+• Самозанятый не может нанимать сотрудников и перепродавать чужое — только свои услуги.
+</div>
+
+<h2><span class="num">4</span>Где искать новые закупки</h2>
+<div class="src">
+  <a href="https://zakupki.gov.ru" target="_blank">ЕИС zakupki.gov.ru</a>
+  <a href="https://rostender.info" target="_blank">РосТендер</a>
+  <a href="https://www.tenderer.ru" target="_blank">Tenderer</a>
+  <a href="https://www.bicotender.ru" target="_blank">Бикотендер</a>
+  <a href="https://zakupki.kontur.ru" target="_blank">Контур.Закупки</a>
+  <a href="https://etpgpb.ru" target="_blank">ЭТП ГПБ</a>
+  <a href="https://business.max.ru" target="_blank">business.max.ru</a>
+</div>
+<div class="note" style="margin-top:12px">Ключевые запросы для поиска: <b>«чат-бот MAX»</b>, <b>«мессенджер МАКС»</b>, <b>«мини-приложение MAX»</b>, <b>«MAX для партнёров»</b>, <b>«ЦДС-CRM»</b></div>
+
+<footer>
+Источник данных: открытые страницы агрегаторов (rostender.info, tenderer.ru, bicotender.ru, zakupki.kontur.ru, etpgpb.ru) и официальная документация dev.max.ru.<br>
+Суммы и даты — как опубликованы в извещениях. Статусы могут измениться: проверяй по номеру закупки перед подачей.
+</footer>
+
+</div>
+
+<script>
+const D = [
+ {who:"МКУ ДО «Ферзиковская СШ»", what:"Чат-бот в MAX для оказания платных услуг", sum:180000, sumTxt:"180 000 ₽", type:"Закупка малого объёма", dates:"30.09 — 02.10.2026", st:"done", reg:"Калужская обл., Ферзиково", url:"https://rostender.info/region/kalujskaya-oblast/95333834-tender-razrabotka-i-vnedrenie-chat-bota-v-messendjere-max-dlya-okazaniya-platnyh-uslug-mku-do-ferzikovskaya-ssh"},
+ {who:"ООО «Амурские коммунальные системы»", what:"ЦДС-CRM + настройка чат-бота на основе MAX под задачи диспетчерской", sum:1830000, sumTxt:"1 830 000 ₽", type:"Коммерческая", dates:"01.10.2026", st:"done", reg:"Амурская обл.", url:"https://www.tenderer.ru/zakupki/tendery-chat-bot"},
+ {who:"СПб больница РАН", what:"Чат-бот в Telegram + личный кабинет пациента с ЕСИА", sum:372000, sumTxt:"372 000 ₽", type:"Закупка у единств. поставщика", dates:"30–31.12.2025", st:"done", reg:"Санкт-Петербург", url:"https://www.tenderer.ru/zakupki/tendery-chat-bot"},
+ {who:"ООО «ВК» (владелец MAX)", what:"Квалификационный отбор в реестр: чат-боты, мини-приложения, лендинги, мини-игры", sum:183000000, sumTxt:"183 000 000 ₽ пул", type:"Квалификационный отбор", dates:"22.09.2026", st:"open", reg:"Москва", url:"https://www.tenderer.ru/zakupki/tendery-chat-bot"},
+ {who:"Заказчик Дагестана", what:"Чат-бот «Виртуальная библиотека» в мессенджере MAX", sum:0, sumTxt:"запрос цен", type:"Запрос цен", dates:"30.09.2026", st:"done", reg:"Дагестан", url:"https://www.tenderer.ru/zakupki/tendery-chat-bot"},
+ {who:"Заказчик Дагестана", what:"Чат-бот + мини-приложение «Сервисы Дагестана» в MAX", sum:0, sumTxt:"запрос цен", type:"Запрос цен", dates:"29.09.2026", st:"done", reg:"Дагестан", url:"https://zakupki.kontur.ru/RQ0103200007726000031"},
+ {who:"Заказчик ХМАО", what:"Чат-бот в MAX — электронная биржа вакансий медиков и фармацевтов", sum:0, sumTxt:"запрос цен", type:"Запрос цен", dates:"10.12.2025", st:"done", reg:"Ханты-Мансийский АО", url:"https://www.tenderer.ru/zakupki/tendery-chat-bot"},
+ {who:"Библиотека, г. Чехов", what:"Чат-бот «БиблиоГИД AI» в MAX + интеграция с АБИС OPAC-Global", sum:0, sumTxt:"цена скрыта", type:"Запрос цен, 44-ФЗ", dates:"23.09 — 30.09.2026", st:"done", reg:"Московская обл., Чехов", url:"https://rostender.info/region/moskovskaya-oblast/chehov/95167685-tender-razrabotka-i-vnedrenie-intellektualnogo-chat-bota-bibliogid-ai-v-messendjere-max-s-integraciej-s-abis-opac-global"},
+ {who:"Заказчик г. Красногорск", what:"Чат-бот маршрутизации обращений в MAX (2026)", sum:0, sumTxt:"см. документацию", type:"Анализ цен, 44-ФЗ", dates:"12.10 — 13.10.2026", st:"done", reg:"Московская обл., Красногорск", url:"https://www.bicotender.ru/it-kompiutery-sviaz/cat-bot-marsrutizacii-obrashhenii-v-messendzere-max-v-godu-krasnogorsk-tender342535079.html"},
+ {who:"Заказчик г. Волгоград", what:"Внедрение чат-бота в MAX + интеграция с ППК «Стек-ЖКХ»", sum:0, sumTxt:"уточнять", type:"Коммерческая закупка", dates:"14.08 — 24.08.2026", st:"done", reg:"Волгоград", url:"https://etpgpb.ru/procedures/etp/1280538-okazanie-uslug-po-vnedreniyu-nastroyke-chat-bota-v-messendzhere-max-i-ego-integratsii-s-ppk-stek-zhkh/"},
+ {who:"Проект «МентальНО.Университет»", what:"Чат-бот в MAX — система ментального благополучия студентов", sum:0, sumTxt:"уточнять", type:"Закупка по соглашению", dates:"2026", st:"done", reg:"—", url:"https://zakupki.kontur.ru/0332100013326000087"},
+ {who:"ГУ ЯНАО «МФЦ»", what:"Модернизация модуля оповещений + интеграция чат-ботов с каналом ЕСОР", sum:0, sumTxt:"запрос цены", type:"Запрос цены", dates:"13.10 и 17.10.2026", st:"done", reg:"Ямало-Ненецкий АО", url:"https://www.tenderer.ru/zakupki/tendery-chat-bot"},
+ {who:"ПАО «РЭСК» (Рязань)", what:"Доступ к интеллектуальному чат-боту в мессенджерах и на сайте", sum:0, sumTxt:"уточнять", type:"Коммерческая", dates:"18.08.2026", st:"done", reg:"Рязанская обл.", url:"https://www.tenderer.ru/zakupki/tendery-chat-bot"}
+];
+
+const tb=document.getElementById('tb'), q=document.getElementById('q'),
+      fs=document.getElementById('fsum'), ft=document.getElementById('fstat'), cnt=document.getElementById('cnt');
+
+function tag(st){
+  if(st==='open') return '<span class="tag t-open">можно подать</span>';
+  if(st==='done') return '<span class="tag t-done">завершён</span>';
+  return '<span class="tag t-q">—</span>';
+}
+
+function render(){
+  const qs=q.value.trim().toLowerCase(), vs=fs.value, vt=ft.value;
+  let rows=D.filter(d=>{
+    if(qs && !((d.who+' '+d.what+' '+d.reg).toLowerCase().includes(qs))) return false;
+    if(vs==='known' && !d.sum) return false;
+    if(vs==='small' && !(d.sum>0 && d.sum<=200000)) return false;
+    if(vs==='big' && !(d.sum>200000)) return false;
+    if(vt && d.st!==vt) return false;
+    return true;
+  });
+  cnt.textContent = 'Показано: '+rows.length+' из '+D.length;
+  if(!rows.length){ tb.innerHTML='<tr><td colspan="6" style="padding:30px;text-align:center;color:#8b98a8">Ничего не найдено</td></tr>'; return; }
+  tb.innerHTML = rows.map(d=>`
+    <tr>
+      <td>
+        <a href="${d.url}" target="_blank">${d.who}</a>
+        <span class="note">${d.what}</span>
+      </td>
+      <td class="sum ${d.sum?'':'unk'}">${d.sumTxt}</td>
+      <td style="color:#8b98a8">${d.type}</td>
+      <td style="white-space:nowrap;color:#8b98a8">${d.dates}</td>
+      <td>${tag(d.st)}</td>
+      <td style="color:#8b98a8">${d.reg}</td>
+    </tr>`).join('');
+}
+[q,fs,ft].forEach(el=>el.addEventListener('input',render));
+render();
+</script>
+</body>
+</html>
