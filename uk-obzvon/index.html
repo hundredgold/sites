@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Обзвон УК Астрахани — бот для MAX</title>
+<style>
+:root{
+  --bg:#0b0f14; --card:#151b24; --card2:#1b2330; --line:#26303d;
+  --txt:#e8eef6; --dim:#8494a8; --acc:#4da3ff; --ok:#3fb950; --warn:#d29922; --bad:#f85149; --purple:#a371f7;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--txt);
+  font:15px/1.5 -apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  padding:16px 12px 90px;max-width:820px;margin:0 auto}
+
+h1{font-size:20px;margin:0 0 4px;letter-spacing:-.3px}
+.sub{color:var(--dim);font-size:13px;margin-bottom:16px}
+
+/* прогресс */
+.prog{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.prog-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.prog-num{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.prog-num small{font-size:13px;color:var(--dim);font-weight:400}
+.bar{height:6px;background:#0a0e13;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--purple));width:0;transition:width .3s}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{font-size:12px;padding:3px 9px;border-radius:99px;background:#0a0e13;border:1px solid var(--line);color:var(--dim)}
+.chip b{color:var(--txt)}
+
+/* фильтры */
+.filters{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px}
+.filters button{
+  flex:0 0 auto;background:var(--card);border:1px solid var(--line);color:var(--dim);
+  border-radius:9px;padding:8px 14px;font-size:13.5px;cursor:pointer;font-family:inherit;
+}
+.filters button.on{background:var(--acc);border-color:var(--acc);color:#04101f;font-weight:600}
+
+/* карточка */
+.item{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:14px 15px;margin-bottom:10px;transition:border-color .2s}
+.item.done{opacity:.55}
+.item.st-hot{border-color:#2a5138}
+.item.st-no{border-color:#4a2020}
+.name{font-weight:600;font-size:15.5px;margin-bottom:3px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{font-size:10.5px;padding:2px 7px;border-radius:5px;font-weight:600;letter-spacing:.3px}
+.b-uk{background:#1d2f3a;color:#8bd0f0}
+.b-tszh{background:#2f2a1d;color:#e8d48b}
+.b-zhsk{background:#2a1d3a;color:#c39bf0}
+.addr{color:var(--dim);font-size:13px;margin-bottom:10px}
+.phone{display:inline-block;background:var(--acc);color:#04101f;text-decoration:none;
+  padding:9px 16px;border-radius:9px;font-weight:700;font-size:14.5px;margin-bottom:10px}
+.phone.none{background:#1b2330;color:var(--dim);font-weight:400;font-size:13px}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.actions button{background:var(--card2);border:1px solid var(--line);color:var(--dim);
+  border-radius:8px;padding:7px 12px;font-size:12.5px;cursor:pointer;font-family:inherit}
+.actions button.on-ok{background:#16301d;border-color:#2a5138;color:#7ee2a0}
+.actions button.on-hot{background:#16301d;border-color:#3fb950;color:#7ee2a0;font-weight:600}
+.actions button.on-no{background:#30161a;border-color:#5c2328;color:#ff9b9b}
+.actions button.on-cb{background:#2a2316;border-color:#5c4520;color:#e8d48b}
+.note{width:100%;margin-top:9px;background:#0a0e13;border:1px solid var(--line);
+  color:var(--txt);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;resize:vertical}
+.note::placeholder{color:#556270}
+
+.empty{text-align:center;color:var(--dim);padding:40px 20px;font-size:14px}
+
+/* нижняя панель */
+.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(11,15,20,.96);
+  backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px 12px;
+  display:flex;gap:8px;max-width:820px;margin:0 auto}
+.bottom a,.bottom button{flex:1;text-align:center;text-decoration:none;background:var(--card);
+  border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:11px 8px;
+  font-size:13px;font-family:inherit;cursor:pointer}
+.bottom a.primary{background:var(--acc);border-color:var(--acc);color:#04101f;font-weight:700}
+</style>
+</head>
+<body>
+
+<h1>Обзвон УК Астрахани</h1>
+<div class="sub">Бот для MAX · крючок: обязанность с 1 сентября 2026</div>
+
+<div class="prog">
+  <div class="prog-row">
+    <div class="prog-num"><span id="p-done">0</span><small> / <span id="p-all">0</span> обработано</small></div>
+    <div class="prog-num" id="p-hot" style="color:var(--ok)">0<small> тёплых</small></div>
+  </div>
+  <div class="bar"><i id="p-bar"></i></div>
+  <div class="chips">
+    <span class="chip">дозвонился <b id="c-ok">0</b></span>
+    <span class="chip">не берут <b id="c-no">0</b></span>
+    <span class="chip">перезвонить <b id="c-cb">0</b></span>
+    <span class="chip">осталось <b id="c-left">0</b></span>
+  </div>
+</div>
+
+<div class="filters">
+  <button data-f="all" class="on">Все</button>
+  <button data-f="new">Не звонил</button>
+  <button data-f="hot">Тёплые</button>
+  <button data-f="cb">Перезвонить</button>
+  <button data-f="no">Отказ</button>
+</div>
+
+<div id="list"></div>
+
+<div class="bottom">
+  <a href="max.ru/se14860684_bot" class="primary" id="demo-link">Открыть демо-бота</a>
+  <button id="reset">Сброс</button>
+</div>
+
+<script>
+const UK = [
+  {n:"ООО УК «Юдомсервис»",t:"УК",a:"ул. Богдана Хмельницкого",p:"+79880787408"},
+  {n:"ООО УО «КВАРТАЛ»",t:"УК",a:"ул. Бориса Алексеева, 63",p:""},
+  {n:"ООО УО «Стрела»",t:"УК",a:"ул. Бориса Алексеева, 32, к1",p:""},
+  {n:"ООО «Юго-Восток 2»",t:"УК",a:"Астрахань",p:""},
+  {n:"ООО «Югдомсервис»",t:"УК",a:"ул. Богдана Хмельницкого, 11",p:""},
+  {n:"ИП Мотинова С.А.",t:"УК",a:"ул. Николая Островского, 144",p:"+79093737360"},
+  {n:"ТСЖ «Дружба»",t:"ТСЖ",a:"ул. Софьи Перовской, 101, к10",p:"+79093744098"},
+  {n:"ТСЖ «Уют»",t:"ТСЖ",a:"проезд Николая Островского, 4, к3",p:"+79608648587"},
+  {n:"ТСЖ «ЛОТОС»",t:"ТСЖ",a:"ул. Михаила Луконина, 6",p:"+79608566328"},
+  {n:"ТСЖ «ПРЕСТИЖ»",t:"ТСЖ",a:"ул. Михаила Луконина, 9, к2",p:"+79698523696"},
+  {n:"ТСЖ «Наш дом»",t:"ТСЖ",a:"ул. Михаила Луконина, 10, к1",p:"+79275520270"},
+  {n:"ТСЖ 33",t:"ТСЖ",a:"ул. Николая Островского, 113, к2",p:"+79275758953"},
+  {n:"ТСН «Первый Дом»",t:"ТСЖ",a:"ул. Бориса Алексеева, 1/79",p:"+79275876167"},
+  {n:"ЖСПК № 39",t:"ЖСК",a:"ул. Богдана Хмельницкого, 10, к1",p:"+79371308070"},
+  {n:"ЖСК «Богучанский»",t:"ЖСК",a:"ул. Кубанская, 68, к1",p:"+79171817344"},
+  {n:"ТСЖ «Димитрова, дом 7»",t:"ТСЖ",a:"ул. Димитрова, 7",p:"+78512572793"},
+  {n:"ТСЖ «Астра»",t:"ТСЖ",a:"ул. Бабушкина, 25",p:""},
+  {n:"УК «Комплекс-А»",t:"УК",a:"Бульварная ул., 4, мкр. Бабаевского",p:"+78512666346"},
+  {n:"УК «Комплекс-А» (офис)",t:"УК",a:"ул. Звёздная, 3Д/3к4",p:"+78512570707"},
+  {n:"УК «Progress»",t:"УК",a:"ул. Бехтерева, 2А",p:"+78512427427"},
+  {n:"УК «Жилищник-2»",t:"УК",a:"ул. Мосина, 1А",p:""}
+];
+
+const KEY = "uk_calls_v1";
+let store = JSON.parse(localStorage.getItem(KEY) || "{}");
+let filter = "all";
+
+const $ = id => document.getElementById(id);
+const save = () => localStorage.setItem(KEY, JSON.stringify(store));
+const st = i => store[i] || {};
+
+function fmtPhone(p){
+  if(!p) return "";
+  if(p.startsWith("+7") && p.length === 12)
+    return "+7 " + p.slice(2,5) + " " + p.slice(5,8) + "-" + p.slice(8,10) + "-" + p.slice(10);
+  return p;
+}
+
+function render(){
+  let done=0, hot=0, ok=0, no=0, cb=0;
+
+  UK.forEach((u,i)=>{
+    const s = st(i);
+    if(s.status) done++;
+    if(s.status==="hot") hot++;
+    if(s.status==="ok") ok++;
+    if(s.status==="no") no++;
+    if(s.status==="cb") cb++;
+  });
+
+  $("p-done").textContent = done;
+  $("p-all").textContent = UK.length;
+  $("p-hot").innerHTML = hot + '<small> тёплых</small>';
+  $("p-bar").style.width = (done/UK.length*100) + "%";
+  $("c-ok").textContent = ok;
+  $("c-no").textContent = no;
+  $("c-cb").textContent = cb;
+  $("c-left").textContent = UK.length - done;
+
+  const rows = UK.map((u,i)=>({u,i})).filter(({i})=>{
+    const s = st(i);
+    if(filter==="all") return true;
+    if(filter==="new") return !s.status;
+    return s.status === filter;
+  });
+
+  if(!rows.length){
+    $("list").innerHTML = '<div class="empty">Тут пусто.<br>Переключи фильтр сверху.</div>';
+    return;
+  }
+
+  $("list").innerHTML = rows.map(({u,i})=>{
+    const s = st(i);
+    const cls = s.status ? "done " + (s.status==="hot"||s.status==="ok"?"st-hot":s.status==="no"?"st-no":"") : "";
+    const badge = u.t==="УК" ? "b-uk" : u.t==="ЖСК" ? "b-zhsk" : "b-tszh";
+    const phone = u.p
+      ? `<a class="phone" href="tel:${u.p}">${fmtPhone(u.p)}</a>`
+      : `<span class="phone none">телефона нет — искать в 2ГИС</span>`;
+    const btn = (val,label,cls2) =>
+      `<button data-i="${i}" data-s="${val}" class="${s.status===val?cls2:''}">${label}</button>`;
+
+    return `<div class="item ${cls}">
+      <div class="name">${u.n}<span class="badge ${badge}">${u.t}</span></div>
+      <div class="addr">${u.a}</div>
+      ${phone}
+      <div class="actions">
+        ${btn("ok","дозвонился","on-ok")}
+        ${btn("no","не берут / отказ","on-no")}
+        ${btn("cb","перезвонить","on-cb")}
+        ${btn("hot","🔥 интерес","on-hot")}
+      </div>
+      <textarea class="note" data-note="${i}" placeholder="Имя директора, что обещал, когда перезвонить...">${s.note||""}</textarea>
+    </div>`;
+  }).join("");
+}
+
+document.addEventListener("click", e=>{
+  const b = e.target.closest("button[data-i]");
+  if(b){
+    const i = b.dataset.i, val = b.dataset.s;
+    store[i] = store[i] || {};
+    store[i].status = store[i].status === val ? "" : val;
+    save(); render(); return;
+  }
+  const f = e.target.closest(".filters button");
+  if(f){
+    document.querySelectorAll(".filters button").forEach(x=>x.classList.remove("on"));
+    f.classList.add("on"); filter = f.dataset.f; render();
+  }
+});
+
+document.addEventListener("input", e=>{
+  const t = e.target.closest("textarea[data-note]");
+  if(t){
+    const i = t.dataset.note;
+    store[i] = store[i] || {};
+    store[i].note = t.value;
+    save();
+  }
+});
+
+$("reset").addEventListener("click", ()=>{
+  if(confirm("Сбросить все отметки и заметки?")){
+    store = {}; save(); render();
+  }
+});
+
+// ссылка на демо-бота
+$("demo-link").href = "https://max.ru/se14860684_bot";
+
+render();
+</script>
+</body>
+</html>
