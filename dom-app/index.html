@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Дом — личный кабинет</title>
+<meta name="theme-color" content="#f7f7f9">
+<!-- SDK грузится асинхронно с таймаутом: если MAX недоступен, страница
+     всё равно отрисуется в демо-режиме, а не зависнет на пустом экране. -->
+<script>
+(function(){
+  var fired = false;
+  function ready(){
+    if(fired) return;
+    fired = true;
+    window.__sdkReady = true;
+    // если страница уже загрузилась — запускаем сразу,
+    // иначе её собственный скрипт сам вызовет boot при старте
+    if(typeof window.__miniappBoot === 'function') window.__miniappBoot();
+  }
+  var s = document.createElement('script');
+  s.src = 'https://st.max.ru/js/max-web-app.js';
+  s.async = true;
+  s.onload = ready;
+  s.onerror = ready;
+  document.head.appendChild(s);
+  setTimeout(ready, 1200); // страховка: не ждём SDK дольше 1.2 с
+})();
+</script>
+<style>
+:root{
+  --bg:#f5f5f7; --card:#ffffff; --ink:#111114; --ink2:#6b6b75; --ink3:#9a9aa5;
+  --line:#e8e8ee; --acc:#4a86ff; --acc2:#7c5cff;
+  --grad:linear-gradient(135deg,#4a86ff,#7c5cff);
+  --ok:#12a150; --okbg:#e8f8ef; --warn:#c77700; --warnbg:#fff4e0; --bad:#d92d20; --badbg:#fee9e7;
+  --r:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background:var(--bg); color:var(--ink);
+  font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:calc(84px + env(safe-area-inset-bottom));
+  overflow-x:hidden;
+}
+
+/* ---------- шапка ---------- */
+.hdr{
+  background:var(--grad); color:#fff; padding:calc(18px + env(safe-area-inset-top)) 18px 22px;
+  border-radius:0 0 24px 24px; position:relative; overflow:hidden;
+}
+.hdr::after{
+  content:""; position:absolute; top:-70px; right:-50px; width:200px; height:200px;
+  background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%); border-radius:50%;
+}
+.hdr-top{display:flex; align-items:center; gap:11px; position:relative}
+.avatar{
+  width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,.22);
+  display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px;
+  flex:0 0 42px; backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.25);
+}
+.hdr-txt{flex:1; min-width:0}
+.hdr-txt .nm{font-weight:600; font-size:15.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.hdr-txt .ad{font-size:12.5px; opacity:.82; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.hdr h1{font-size:19px; font-weight:700; margin-top:16px; letter-spacing:-.02em; position:relative}
+
+/* ---------- табы ---------- */
+.tabs{
+  display:flex; gap:6px; background:var(--card); margin:-14px 14px 0; padding:5px;
+  border-radius:14px; box-shadow:0 4px 18px -6px rgba(20,20,40,.14); position:relative; z-index:2;
+}
+.tabs button{
+  flex:1; border:0; background:transparent; color:var(--ink2); font:600 13.5px/1 inherit;
+  padding:11px 8px; border-radius:10px; cursor:pointer; transition:.18s; font-family:inherit;
+}
+.tabs button.on{background:var(--ink); color:#fff}
+
+/* ---------- контент ---------- */
+.page{padding:18px 14px 0; display:none; animation:fade .22s ease}
+.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* карточка заявки */
+.req{
+  background:var(--card); border-radius:var(--r); padding:15px 16px; margin-bottom:10px;
+  box-shadow:0 1px 3px rgba(20,20,40,.06); border:1px solid var(--line);
+}
+.req-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:7px}
+.req-num{font-size:11.5px; color:var(--ink3); font-weight:600; letter-spacing:.04em}
+.req-t{font-weight:600; font-size:14.5px; line-height:1.35; margin-bottom:5px}
+.req-d{font-size:13px; color:var(--ink2); line-height:1.45}
+.req-f{display:flex; justify-content:space-between; align-items:center; margin-top:11px; padding-top:10px; border-top:1px solid var(--line); font-size:12px; color:var(--ink3)}
+.st{font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:20px; white-space:nowrap}
+.st.new{background:var(--warnbg); color:var(--warn)}
+.st.work{background:#e7efff; color:#2c5fd0}
+.st.done{background:var(--okbg); color:var(--ok)}
+
+/* счётчики */
+.meter{
+  background:var(--card); border-radius:var(--r); padding:16px; margin-bottom:10px;
+  border:1px solid var(--line); box-shadow:0 1px 3px rgba(20,20,40,.06);
+}
+.meter-top{display:flex; align-items:center; gap:11px; margin-bottom:13px}
+.m-ico{
+  width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+  font-size:18px; flex:0 0 38px;
+}
+.m-ico.w{background:#e7efff}
+.m-ico.g{background:#ffeaea}
+.m-ico.e{background:#fff6e0}
+.m-nm{flex:1; min-width:0}
+.m-nm b{display:block; font-size:14.5px; font-weight:600}
+.m-nm span{font-size:12px; color:var(--ink3)}
+.m-val{font-size:21px; font-weight:700; letter-spacing:-.02em; text-align:right}
+.m-val small{display:block; font-size:11px; font-weight:500; color:var(--ink3); letter-spacing:0}
+
+.inp-row{display:flex; gap:8px; margin-top:12px}
+.inp-row input{
+  flex:1; min-width:0; border:1.5px solid var(--line); border-radius:11px; padding:12px 14px;
+  font:600 16px/1 inherit; color:var(--ink); background:var(--bg); outline:none;
+  font-family:inherit; transition:border-color .18s;
+}
+.inp-row input:focus{border-color:var(--acc); background:#fff}
+.inp-row input::placeholder{color:var(--ink3); font-weight:400; font-size:14px}
+.btn-send{
+  border:0; background:var(--grad); color:#fff; font:600 14px/1 inherit; padding:0 20px;
+  border-radius:11px; cursor:pointer; font-family:inherit; white-space:nowrap;
+  transition:opacity .18s; flex:0 0 auto;
+}
+.btn-send:active{opacity:.82}
+.btn-send:disabled{opacity:.45}
+
+/* пусто */
+.empty{text-align:center; padding:48px 24px; color:var(--ink3)}
+.empty .ico{font-size:38px; margin-bottom:12px; opacity:.55}
+.empty p{font-size:14px; line-height:1.55}
+
+/* нижняя кнопка */
+.fab{
+  position:fixed; left:14px; right:14px; bottom:calc(14px + env(safe-area-inset-bottom));
+  background:var(--ink); color:#fff; border:0; border-radius:15px; padding:16px;
+  font:600 15px/1 inherit; font-family:inherit; cursor:pointer;
+  box-shadow:0 8px 26px -8px rgba(0,0,0,.42); display:flex; align-items:center;
+  justify-content:center; gap:9px; transition:transform .14s;
+}
+.fab:active{transform:scale(.98)}
+
+/* тост */
+.toast{
+  position:fixed; left:50%; bottom:calc(92px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(14px);
+  background:var(--ink); color:#fff; padding:12px 20px; border-radius:12px; font-size:13.5px;
+  font-weight:500; opacity:0; pointer-events:none; transition:.26s; z-index:99;
+  max-width:calc(100vw - 56px); text-align:center;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+/* баннер демо-режима */
+.demo-bar{
+  background:#fff4e0; color:#8a5a00; font-size:11.5px; text-align:center;
+  padding:7px 12px; font-weight:600; letter-spacing:.01em; display:none;
+}
+.demo-bar.on{display:block}
+</style>
+</head>
+<body>
+
+<div class="demo-bar" id="demoBar">ДЕМО-РЕЖИМ · открыто вне MAX, данные ненастоящие</div>
+
+<header class="hdr">
+  <div class="hdr-top">
+    <div class="avatar" id="av">Д</div>
+    <div class="hdr-txt">
+      <div class="nm" id="userName">Житель</div>
+      <div class="ad" id="userAddr">ул. Ленина, 12, кв. 47</div>
+    </div>
+  </div>
+  <h1>Личный кабинет</h1>
+</header>
+
+<div class="tabs">
+  <button class="on" data-tab="reqs">Мои заявки</button>
+  <button data-tab="meters">Счётчики</button>
+</div>
+
+<!-- ЗАЯВКИ -->
+<section class="page on" id="page-reqs">
+  <div id="reqList"></div>
+</section>
+
+<!-- СЧЁТЧИКИ -->
+<section class="page" id="page-meters">
+  <div id="meterList"></div>
+</section>
+
+<button class="fab" id="fabNew">
+  <span style="font-size:17px;line-height:1">+</span> Новая заявка
+</button>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   MAX Bridge — безопасная обёртка.
+   Вне MAX (обычный браузер) WebApp отсутствует: включаем демо-режим,
+   чтобы страницу можно было показывать клиенту по прямой ссылке.
+   ============================================================ */
+let WA = null;
+let IN_MAX = false;
+
+const haptic = {
+  tap(){ try{ WA?.HapticFeedback?.impactOccurred?.('light'); }catch(e){} },
+  ok(){  try{ WA?.HapticFeedback?.notificationOccurred?.('success'); }catch(e){} },
+  err(){ try{ WA?.HapticFeedback?.notificationOccurred?.('error'); }catch(e){} }
+};
+
+/* ---------- данные ---------- */
+const DEMO_REQS = [
+  {num:'1047', t:'Протекает труба в подъезде', d:'2 подъезд, между 3 и 4 этажом', date:'сегодня, 10:42', st:'work'},
+  {num:'1039', t:'Не горит лампа на лестнице', d:'5 этаж, у лифта', date:'28 октября, 19:15', st:'done'},
+  {num:'1031', t:'Не закрывается дверь подъезда', d:'вход со двора', date:'25 октября, 08:30', st:'done'}
+];
+
+const DEMO_METERS = [
+  {id:'hvs', ico:'💧', cls:'w', nm:'Холодная вода', sn:'счётчик 0231', val:1234, unit:'м³'},
+  {id:'gvs', ico:'🔥', cls:'g', nm:'Горячая вода', sn:'счётчик 0232', val:876, unit:'м³'},
+  {id:'el',  ico:'⚡', cls:'e', nm:'Электричество', sn:'счётчик 0233', val:4512, unit:'кВт·ч'}
+];
+
+const ST_LABEL = {new:'Принята', work:'В работе', done:'Выполнена'};
+
+/* ---------- состояние ---------- */
+let reqs = [];
+let meters = [];
+
+/* ---------- инициализация ---------- */
+async function init(){
+  // SDK мог загрузиться (внутри MAX) или не загрузиться (браузер/офлайн)
+  WA = window.WebApp || null;
+  IN_MAX = !!WA && !!WA.initData;
+
+  // имя пользователя из MAX
+  if(IN_MAX){
+    try{
+      const u = WA.initDataUnsafe?.user;
+      if(u?.first_name){
+        document.getElementById('userName').textContent = u.first_name;
+        document.getElementById('av').textContent = u.first_name[0].toUpperCase();
+      }
+    }catch(e){}
+    // кнопка «назад» ведёт в чат
+    try{
+      WA.BackButton?.show?.();
+      WA.BackButton?.onClick?.(()=>{ WA.BackButton.hide(); });
+    }catch(e){}
+  } else {
+    document.getElementById('demoBar').classList.add('on');
+  }
+
+  // подгоняем высоту под вьюпорт клиента
+  if(IN_MAX){
+    try{
+      const vp = await WA.getViewportSize();
+      if(vp?.height) document.documentElement.style.minHeight = vp.height + 'px';
+    }catch(e){}
+  }
+
+  reqs = JSON.parse(JSON.stringify(DEMO_REQS));
+  meters = JSON.parse(JSON.stringify(DEMO_METERS));
+
+  renderReqs();
+  renderMeters();
+}
+
+// точка входа: вызывается загрузчиком SDK (или страховочным таймаутом)
+window.__miniappBoot = init;
+
+// если SDK уже успел отработать раньше, чем определился init — стартуем сейчас
+if(window.__sdkReady) init();
+
+/* ---------- рендер заявок ---------- */
+function renderReqs(){
+  const box = document.getElementById('reqList');
+  if(!reqs.length){
+    box.innerHTML = `<div class="empty">
+      <div class="ico">📋</div>
+      <p>Заявок пока нет.<br>Нажмите «Новая заявка» — бот примет обращение<br>и передаст в диспетчерскую.</p>
+    </div>`;
+    return;
+  }
+  box.innerHTML = reqs.map(r=>`
+    <div class="req">
+      <div class="req-top">
+        <div style="flex:1;min-width:0">
+          <div class="req-num">ЗАЯВКА №${r.num}</div>
+          <div class="req-t">${esc(r.t)}</div>
+          <div class="req-d">${esc(r.d)}</div>
+        </div>
+        <span class="st ${r.st}">${ST_LABEL[r.st]}</span>
+      </div>
+      <div class="req-f"><span>${esc(r.date)}</span><span>диспетчерская</span></div>
+    </div>`).join('');
+}
+
+/* ---------- рендер счётчиков ---------- */
+function renderMeters(){
+  const box = document.getElementById('meterList');
+  box.innerHTML = meters.map(m=>`
+    <div class="meter">
+      <div class="meter-top">
+        <div class="m-ico ${m.cls}">${m.ico}</div>
+        <div class="m-nm"><b>${esc(m.nm)}</b><span>${esc(m.sn)}</span></div>
+        <div class="m-val">${m.val}<small>${m.unit}</small></div>
+      </div>
+      <div class="inp-row">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Новое показание"
+               data-mid="${m.id}" autocomplete="off">
+        <button class="btn-send" data-send="${m.id}">Передать</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ---------- передача показаний ---------- */
+function submitMeter(id, input, btn){
+  const raw = (input.value || '').replace(/\D/g, '');
+  const m = meters.find(x=>x.id===id);
+  if(!m) return;
+
+  if(!raw){
+    haptic.err(); toast('Введите цифры со счётчика');
+    input.focus(); return;
+  }
+  const val = parseInt(raw, 10);
+
+  if(val < m.val){
+    haptic.err();
+    toast(`Значение меньше прошлого (${m.val}). Проверьте счётчик`);
+    input.select(); return;
+  }
+  if(val === m.val){
+    haptic.err(); toast('Показание не изменилось');
+    input.select(); return;
+  }
+
+  const delta = val - m.val;
+  m.val = val;
+  btn.disabled = true;
+  haptic.ok();
+  toast(`Принято. Расход: ${delta} ${m.unit}`);
+  renderMeters();
+
+  // демо-отправка в бота
+  if(IN_MAX && WA.openMaxLink){
+    // в реальном продукте здесь fetch на backend → бот отправит уведомление
+  }
+}
+
+/* ---------- новая заявка ---------- */
+function newRequest(){
+  haptic.tap();
+  const n = 1050 + reqs.length;
+  reqs.unshift({
+    num:String(n),
+    t:'Новая заявка',
+    d:'Заполняется в боте — так выглядит принятая заявка',
+    date:'только что',
+    st:'new'
+  });
+  renderReqs();
+  switchTab('reqs');
+  toast('Заявка создана — бот передал её диспетчеру');
+}
+
+/* ---------- табы ---------- */
+function switchTab(name){
+  document.querySelectorAll('.tabs button').forEach(b=>{
+    b.classList.toggle('on', b.dataset.tab===name);
+  });
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.toggle('on', p.id==='page-'+name);
+  });
+  const fab = document.getElementById('fabNew');
+  fab.style.display = name==='reqs' ? 'flex' : 'none';
+}
+
+/* ---------- утилиты ---------- */
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+/* ---------- события ---------- */
+document.addEventListener('click', e=>{
+  const tab = e.target.closest('.tabs button');
+  if(tab){ haptic.tap(); switchTab(tab.dataset.tab); return; }
+
+  const send = e.target.closest('[data-send]');
+  if(send){
+    const id = send.dataset.send;
+    const input = document.querySelector(`input[data-mid="${id}"]`);
+    submitMeter(id, input, send);
+    return;
+  }
+
+  if(e.target.closest('#fabNew')){ newRequest(); }
+});
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='Enter'){
+    const inp = e.target.closest('input[data-mid]');
+    if(inp){
+      const id = inp.dataset.mid;
+      const btn = document.querySelector(`[data-send="${id}"]`);
+      submitMeter(id, inp, btn);
+    }
+  }
+});
+
+init();
+</script>
+</body>
+</html>
