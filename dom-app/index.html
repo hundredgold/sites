@@ -235,9 +235,11 @@ let meters = [];
 
 /* ---------- инициализация ---------- */
 async function init(){
-  // SDK мог загрузиться (внутри MAX) или не загрузиться (браузер/офлайн)
+  // SDK мог загрузиться (внутри MAX) или не загрузиться (браузер/офлайн).
+  // Внутри MAX объект WebApp есть всегда; initData может быть пустым,
+  // поэтому определяем режим по наличию самого объекта, а не по initData.
   WA = window.WebApp || null;
-  IN_MAX = !!WA && !!WA.initData;
+  IN_MAX = !!WA && typeof WA.getViewportSize === 'function';
 
   // имя пользователя из MAX
   if(IN_MAX){
@@ -247,11 +249,13 @@ async function init(){
         document.getElementById('userName').textContent = u.first_name;
         document.getElementById('av').textContent = u.first_name[0].toUpperCase();
       }
+      const chat = WA.initDataUnsafe?.chat;
+      if(chat?.id) document.getElementById('userAddr').textContent = 'кв. 47 · лицевой счёт 0231';
     }catch(e){}
     // кнопка «назад» ведёт в чат
     try{
       WA.BackButton?.show?.();
-      WA.BackButton?.onClick?.(()=>{ WA.BackButton.hide(); });
+      WA.BackButton?.onClick?.(()=>{ try{ WA.BackButton.hide(); }catch(e){} });
     }catch(e){}
   } else {
     document.getElementById('demoBar').classList.add('on');
