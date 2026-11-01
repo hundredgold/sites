@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GOLDMAN.WORK — ИИ-автоматизация (вариант в стиле Planes)</title>
+<meta name="description" content="ИИ-обработка входящих заявок, ИИ-администраторы 24/7, боты в MAX под ключ, автоматизация CRM. Пилот 2 недели с гарантией возврата.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --fg:#09090b; --muted:#52525b; --dim:#a1a1aa;
+  --card:#ffffff; --subtle:#fafafa; --subtle2:#f4f4f5;
+  --border:#e4e4e7; --border2:#d4d4d8;
+  --accent:#18181b; --accent-fg:#fafafa;
+  --max:#2563eb; --max-soft:#eff4ff; --max-line:#c7d7fe;
+  --ok:#16a34a; --warn:#b45309;
+  --radius:14px;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+::selection{background:var(--fg);color:#fff}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--max);display:inline-block}
+
+/* badges & buttons */
+.badge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--fg);border:1px solid var(--border);background:var(--card);border-radius:999px;padding:6px 14px;transition:.18s;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+a.badge:hover{border-color:var(--border2);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.badge b{font-weight:600}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);border:1px solid var(--border);background:var(--card);border-radius:999px;padding:7px 15px;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:14px;font-weight:500;padding:11px 18px;border-radius:10px;border:1px solid transparent;cursor:pointer;transition:.18s;white-space:nowrap}
+.btn .arr{transition:transform .18s}
+.btn:hover .arr{transform:translateX(3px)}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.btn.primary:hover{background:#000}
+.btn.outline{background:var(--card);color:var(--fg);border-color:var(--border2)}
+.btn.outline:hover{background:var(--subtle2)}
+.btn.ghost{background:transparent;color:var(--muted);padding:8px 12px}
+.btn.ghost:hover{color:var(--fg)}
+.btn.max{background:var(--max);color:#fff;border-color:var(--max)}
+.btn.max:hover{background:#1d4ed8}
+.btn.sm{padding:8px 14px;font-size:13px}
+
+/* scroll progress */
+.sbar{position:fixed;top:0;left:0;height:2px;width:0;z-index:60;background:var(--accent);transition:width .08s linear}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav-in{max-width:1140px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;gap:26px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.02em}
+.logo .mark{width:26px;height:26px;border-radius:7px;background:var(--accent);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.nav-links{display:flex;gap:22px;margin-left:10px}
+.nav-links a{font-size:14px;color:var(--muted);transition:.15s}
+.nav-links a:hover{color:var(--fg)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+@media(max-width:940px){.nav-links{display:none}}
+@media(max-width:560px){.nav-right .compare{display:none}}
+
+/* hero */
+.hero{position:relative;padding:86px 0 70px;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:-1;background-image:radial-gradient(circle at 1px 1px,#e4e4e7 1px,transparent 0);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 85% 65% at 50% 0%,#000 25%,transparent 75%);mask-image:radial-gradient(ellipse 85% 65% at 50% 0%,#000 25%,transparent 75%)}
+.hero h1{font-size:clamp(40px,6.6vw,78px);font-weight:700;letter-spacing:-.035em;line-height:1.02;max-width:900px;margin-top:26px}
+.hero h1 .hl{background:linear-gradient(90deg,var(--max),#7c3aed);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:580px;margin-top:22px;font-size:18px;color:var(--muted)}
+.hero p b{color:var(--fg);font-weight:600}
+.hero-cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+.hero-stats{display:flex;gap:12px;margin-top:42px;flex-wrap:wrap}
+.hstat{border:1px solid var(--border);border-radius:12px;padding:13px 18px;background:var(--card);min-width:118px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.hstat b{display:block;font-size:21px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.hstat span{font-size:12.5px;color:var(--muted)}
+
+/* marquee */
+.marquee{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--subtle);overflow:hidden;padding:17px 0;position:relative}
+.marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:90px;z-index:1;pointer-events:none}
+.marquee::before{left:0;background:linear-gradient(90deg,var(--subtle),transparent)}
+.marquee::after{right:0;background:linear-gradient(270deg,var(--subtle),transparent)}
+.mq-track{display:flex;gap:12px;width:max-content;animation:mq 36s linear infinite}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.mq-track{animation:none}}
+
+/* sections */
+section{padding:88px 0;scroll-margin-top:72px}
+.sec-head{max-width:720px;margin-bottom:46px}
+.sec-head .eyebrow{margin-bottom:14px}
+.sec-head h2{font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:-.028em;line-height:1.08}
+.sec-head .note{color:var(--muted);margin-top:14px;font-size:16px}
+
+/* grid */
+.grid2{display:grid;grid-template-columns:1fr 1.08fr;gap:44px;align-items:start}
+@media(max-width:920px){.grid2{grid-template-columns:1fr;gap:30px}}
+
+/* steps + terminal */
+.step{display:flex;gap:16px;padding:20px;border:1px solid var(--border);border-radius:12px;background:var(--card);cursor:pointer;transition:.18s;margin-bottom:12px}
+.step:hover{border-color:var(--border2);box-shadow:0 6px 22px rgba(0,0,0,.05)}
+.step.on{border-color:var(--accent);box-shadow:0 6px 22px rgba(0,0,0,.07)}
+.step .n{font-family:var(--mono);font-size:12px;color:var(--dim);padding-top:3px}
+.step.on .n{color:var(--max)}
+.step h3{font-size:17px;font-weight:600;margin-bottom:4px}
+.step p{color:var(--muted);font-size:14px}
+.step .tag{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--max);background:var(--max-soft);border:1px solid var(--max-line);border-radius:999px;padding:3px 10px}
+.term{background:#0b0b0f;border:1px solid #1c1c21;border-radius:14px;overflow:hidden;position:sticky;top:76px;box-shadow:0 18px 50px rgba(0,0,0,.14)}
+.term-bar{display:flex;align-items:center;gap:7px;padding:12px 16px;border-bottom:1px solid #1c1c21}
+.term-bar i{width:11px;height:11px;border-radius:50%;background:#2a2a30;display:inline-block}
+.term-bar i:first-child{background:#ff5f57}.term-bar i:nth-child(2){background:#febc2e}.term-bar i:nth-child(3){background:#28c840}
+.term-bar span{margin-left:auto;font-family:var(--mono);font-size:11px;color:#6b7280}
+.term-body{padding:20px;font-family:var(--mono);font-size:13px;line-height:1.8;color:#a1a1aa;min-height:300px}
+.term-body .c{color:#6b7280}.term-body .y{color:#fbbf24}.term-body .w{color:#f4f4f5}.term-body .g{color:#4ade80}
+.term-note{display:flex;gap:8px;padding:0 20px 18px;font-family:var(--mono);font-size:11px;color:#6b7280}
+.term-note b{color:#4ade80;font-weight:400}
+
+/* service cards */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:820px){.cards{grid-template-columns:1fr}}
+.cards.three{grid-template-columns:repeat(3,1fr)}
+@media(max-width:820px){.cards.three{grid-template-columns:1fr}}
+.card{border:1px solid var(--border);border-radius:14px;padding:26px;background:var(--card);transition:.2s;display:flex;flex-direction:column;min-height:210px}
+.card:hover{border-color:var(--border2);box-shadow:0 12px 36px rgba(0,0,0,.07);transform:translateY(-2px)}
+.card .sn{font-family:var(--mono);font-size:12px;color:var(--dim);display:flex;align-items:center;gap:9px}
+.card h3{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:14px 0 10px}
+.card p{color:var(--muted);font-size:14.5px;flex:1}
+.card .for{margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--fg)}
+.card.max-card{border-color:var(--max-line);background:linear-gradient(180deg,var(--max-soft),var(--card) 62%)}
+.card.max-card .for{color:var(--max)}
+.card .mini-badge{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--max);border:1px solid var(--max-line);background:#fff;border-radius:999px;padding:2px 8px}
+
+/* MAX feature */
+.max-sec{background:var(--subtle);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.max-lead{color:var(--muted);font-size:16px;max-width:520px;margin-top:6px}
+.max-lead b{color:var(--fg);font-weight:600}
+.max-feat{list-style:none;display:grid;gap:13px;margin:28px 0 0}
+.max-feat li{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:var(--fg)}
+.max-feat li .ck{flex:none;margin-top:1px;width:20px;height:20px;border-radius:6px;background:var(--max-soft);color:var(--max);display:inline-flex;align-items:center;justify-content:center;font-size:12px;border:1px solid var(--max-line)}
+.max-feat li span{color:var(--muted)}
+.max-cta{margin-top:32px;display:flex;gap:12px;flex-wrap:wrap}
+
+/* chat window (light messenger) */
+.chatwin{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card);box-shadow:0 14px 40px rgba(0,0,0,.07)}
+.cw-bar{display:flex;align-items:center;gap:11px;padding:13px 16px;border-bottom:1px solid var(--border);background:var(--subtle)}
+.cw-ava{width:32px;height:32px;border-radius:9px;background:var(--accent);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
+.chatwin.max .cw-ava{background:var(--max)}
+.cw-title{font-size:14px;font-weight:600;line-height:1.25}
+.cw-title small{display:block;font-size:11.5px;color:var(--muted);font-weight:400}
+.cw-live{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ok);display:inline-flex;align-items:center;gap:7px}
+.cw-live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(22,163,74,.15)}
+.chat-body{height:360px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--subtle)}
+.msg{max-width:82%;padding:10px 13px;border-radius:15px;font-size:14px;line-height:1.5}
+.msg.bot{align-self:flex-start;background:var(--card);border:1px solid var(--border);border-bottom-left-radius:5px}
+.msg.user{align-self:flex-end;background:var(--accent);color:var(--accent-fg);border-bottom-right-radius:5px}
+.chatwin.max .msg.user{background:var(--max)}
+.msg .who{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.04em;margin-bottom:4px}
+.msg.bot .who{color:var(--dim)}
+.chatwin.max .msg.bot .who{color:var(--max)}
+.msg.user .who{color:rgba(255,255,255,.65)}
+.typing{align-self:flex-start;color:var(--dim);font-size:13px;font-family:var(--mono);padding:2px 2px}
+.chat-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);background:var(--card)}
+.chat-input{flex:1;background:var(--subtle2);border:1px solid var(--border);border-radius:999px;color:var(--fg);font-family:var(--sans);font-size:14px;padding:10px 16px;outline:none}
+.chat-input:focus{border-color:var(--border2)}
+.chat-send{border-radius:999px;padding:10px 16px}
+.mxlogo{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:4px;background:var(--max);color:#fff;font-size:9px;font-weight:700;margin-right:6px;vertical-align:middle}
+.cw-note{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--card)}
+.cw-note b{color:var(--max);font-weight:500}
+
+/* email demo */
+.demo-ta{width:100%;min-height:300px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--fg);font-family:var(--mono);font-size:13px;line-height:1.7;padding:16px;resize:vertical;outline:none}
+.demo-ta:focus{border-color:var(--border2)}
+.outcard{border:1px solid var(--border);border-radius:16px;background:var(--card);box-shadow:0 14px 40px rgba(0,0,0,.06);overflow:hidden}
+.out-body{padding:18px;min-height:300px;font-size:13px}
+.demo-table{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 14px}
+.demo-table th{text-align:left;color:var(--dim);font-weight:500;padding:6px 8px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px}
+.demo-table td{padding:7px 8px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:12.5px;vertical-align:top}
+.demo-table td.weak{color:var(--muted)}
+.dwarn{color:var(--warn)}
+.dok{color:var(--ok)}
+.dmeta{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.8}
+.dhead{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.06em;margin:12px 0 6px;text-transform:uppercase}
+.demo-hint{color:var(--muted);font-size:13px;margin-top:16px;line-height:1.7}
+
+/* pricing */
+.price{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.prow{display:grid;grid-template-columns:150px 1fr 170px 1fr;gap:20px;align-items:baseline;padding:20px 22px;border-bottom:1px solid var(--border);transition:background .15s}
+.prow:last-child{border-bottom:none}
+.prow:hover{background:var(--subtle)}
+.prow .pn{font-weight:600;font-size:15px}
+.prow .pd{color:var(--muted);font-size:14px}
+.prow .pp{font-family:var(--mono);font-size:15px;font-weight:500}
+.prow .pp small{display:block;font-size:11px;color:var(--dim);margin-top:2px}
+.prow .pg{font-size:13px;color:var(--muted)}
+.prow .pg b{color:var(--fg);font-weight:600}
+.prow.max-row{background:var(--max-soft)}
+.prow.max-row:hover{background:#e6eeff}
+.prow.max-row .pg b{color:var(--max)}
+@media(max-width:820px){.prow{grid-template-columns:1fr 1fr;row-gap:6px}}
+
+/* guarantee */
+.guar{padding:72px 0}
+.guar-card{border:1px solid var(--border);border-radius:20px;background:linear-gradient(180deg,var(--subtle),var(--card));padding:48px 40px;text-align:center}
+.guar-card .eyebrow{justify-content:center;margin-bottom:16px;color:var(--max)}
+.guar-card h2{font-size:clamp(24px,3.4vw,38px);font-weight:700;letter-spacing:-.02em;max-width:820px;margin:0 auto;line-height:1.15}
+.guar-card p{color:var(--muted);max-width:620px;margin:18px auto 0}
+
+/* contact */
+.contact-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:start}
+@media(max-width:820px){.contact-grid{grid-template-columns:1fr;gap:30px}}
+.contact h2{font-size:clamp(28px,4vw,46px);font-weight:700;letter-spacing:-.028em;line-height:1.08}
+.contact p{color:var(--muted);margin-top:16px;max-width:440px}
+.clist{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.crow{display:flex;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid var(--border);align-items:baseline;transition:background .15s}
+.crow:last-child{border-bottom:none}
+.crow:hover{background:var(--subtle)}
+.crow .k{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.crow .v{font-size:14px;font-weight:500;text-align:right}
+.crow .v small{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:3px}
+
+/* footer */
+footer{border-top:1px solid var(--border);padding:34px 0;background:var(--subtle)}
+.foot-in{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap}
+.foot-links a{font-size:13px;color:var(--muted)}
+.foot-links a:hover{color:var(--fg)}
+footer .muted{font-size:13px;color:var(--dim)}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.reveal.vis{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="sbar" id="sbar" aria-hidden="true"></div>
+
+<nav>
+  <div class="nav-in">
+    <a class="logo" href="#top"><span class="mark">G</span>GOLDMAN.WORK</a>
+    <div class="nav-links">
+      <a href="#services">Услуги</a>
+      <a href="#max">Боты в MAX</a>
+      <a href="#how">Как работаем</a>
+      <a href="#demo">Демо</a>
+      <a href="#pricing">Цены</a>
+    </div>
+    <div class="nav-right">
+      <a class="btn ghost sm compare" href="index.html">Тёмная версия ↗</a>
+      <a class="btn primary sm" href="#contact">Обсудить задачу</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="wrap">
+    <a class="badge" href="#max"><span class="dot"></span><b>Новое</b> · боты в MAX под ключ →</a>
+    <h1>Рутину — машине.<br>Деньги — <span class="hl">людям.</span></h1>
+    <p>Внедряем ИИ туда, где бизнес теряет время и заявки: <b>обработка входящих писем для производств и опта</b>, ИИ-администраторы для клиник и салонов, <b>боты в мессенджере MAX под ключ</b>, автоматизация CRM. <b>Пилот — 2 недели.</b> Не экономим ваше время — возвращаем деньги.</p>
+    <div class="hero-cta">
+      <a class="btn primary" href="#contact">Бесплатное демо на ваших письмах <span class="arr">→</span></a>
+      <a class="btn outline" href="tel:+79012826132">+7 (901) 282-61-32</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><b>&lt;5 сек</b><span>ответ клиенту</span></div>
+      <div class="hstat"><b>24/7</b><span>без выходных</span></div>
+      <div class="hstat"><b>2 недели</b><span>пилот с гарантией</span></div>
+      <div class="hstat"><b>MAX · TG · WA</b><span>все каналы</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="mq-track" id="mqTrack"></div>
+</div>
+
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="dot"></span>01 · Процесс</div>
+      <h2>Как мы работаем</h2>
+      <div class="note">От первого звонка до боевой системы — 2–4 недели.</div>
+    </div>
+    <div class="grid2">
+      <div class="reveal">
+        <div class="step on" data-term="0">
+          <span class="n">01</span>
+          <div><h3>Демо на ваших письмах</h3>
+          <p>Присылаете 3–5 обезличенных заявок — видите таблицу, которую собрал ИИ, и список «что уточнить». Бесплатно и без обязательств.</p>
+          <span class="tag">0 ₽ · 1 день</span></div>
+        </div>
+        <div class="step" data-term="1">
+          <span class="n">02</span>
+          <div><h3>Пилот — 2 недели</h3>
+          <p>Подключаем к вашему реальному потоку. Замер «до/после»: скорость ответа, часы менеджера, деньги. Гарантия возврата — см. ниже.</p>
+          <span class="tag">от 10 000 ₽</span></div>
+        </div>
+        <div class="step" data-term="2">
+          <span class="n">03</span>
+          <div><h3>Внедрение</h3>
+          <p>Интеграция с amoCRM, Bitrix24 или таблицами. Почта, мессенджеры, сайт-виджет, автонапоминания. Работает на ваших данных, под ваши артикулы.</p>
+          <span class="tag">от 30 000 ₽</span></div>
+        </div>
+        <div class="step" data-term="3">
+          <span class="n">04</span>
+          <div><h3>Поддержка</h3>
+          <p>Абонентская плата: развиваем сценарии, следим за качеством распознавания, каждый месяц — отчёт по цифрам.</p>
+          <span class="tag">от 15 000 ₽/мес</span></div>
+        </div>
+      </div>
+      <div class="term reveal">
+        <div class="term-bar"><i></i><i></i><i></i><span>goldman.work — обработка заявки</span></div>
+        <div class="term-body" id="termBody"></div>
+        <div class="term-note"><b>●</b> человек в контуре: ничего не уходит клиенту без проверки менеджера</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="dot"></span>02 · Услуги</div>
+      <h2>Что внедряем</h2>
+    </div>
+    <div class="cards reveal">
+      <div class="card max-card">
+        <span class="sn">СЕРВИС 01 <span class="mini-badge">новое</span></span>
+        <h3>Боты в MAX под ключ</h3>
+        <p>Разрабатываю ботов в мессенджере MAX от ТЗ до запуска: меню с кнопками, приём и оформление заявок прямо в чате, оплата, интеграция с CRM и таблицами, рассылки и уведомления. Вы получаете готовый работающий бот.</p>
+        <span class="for">→ МАГАЗИНЫ · УСЛУГИ · ДОСТАВКА · B2B</span>
+      </div>
+      <div class="card">
+        <span class="sn">СЕРВИС 02</span>
+        <h3>ИИ-обработчик заявок</h3>
+        <p>Письма дилеров и клиентов превращаются в готовую таблицу: модели, артикулы, количества, сроки. Недостающие данные подсвечиваются — менеджер проверяет, а не разбирает руками.</p>
+        <span class="for">→ ПРОИЗВОДСТВА · ОПТ · ДИЛЕРСКИЕ СЕТИ</span>
+      </div>
+      <div class="card">
+        <span class="sn">СЕРВИС 03</span>
+        <h3>ИИ-администратор 24/7</h3>
+        <p>MAX, Telegram, WhatsApp и виджет на сайте: отвечает за 5 секунд, снимает типовые вопросы, записывает клиентов и напоминает о визите. Ночью и в выходные — тоже.</p>
+        <span class="for">→ КЛИНИКИ · САЛОНЫ · СЕРВИСЫ</span>
+      </div>
+      <div class="card">
+        <span class="sn">СЕРВИС 04</span>
+        <h3>Автоматизация продаж</h3>
+        <p>amoCRM и Bitrix24 под ваш процесс: автоворонки, задачи, напоминания, follow-up без забываний. Ни одна заявка больше не зависает между менеджерами.</p>
+        <span class="for">→ ОТДЕЛЫ ПРОДАЖ · B2B</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="max" class="max-sec">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="dot"></span>03 · Боты в MAX · разработка под ключ</div>
+      <h2>Бот в MAX, который продаёт и принимает заявки за вас.</h2>
+      <div class="note">Новый мессенджер — ваши клиенты уже там.</div>
+    </div>
+    <div class="grid2 reveal">
+      <div>
+        <p class="max-lead">Собираю бота в мессенджере <b>MAX</b> целиком: от сценария и кнопок до интеграции с вашей системой. Вы ставите задачу — получаете <b>готовый работающий бот</b> и инструкцию, как им пользоваться.</p>
+        <ul class="max-feat">
+          <li><span class="ck">✓</span><div>Сценарии и меню с кнопками <span>— клиент идёт по шагам, не теряется</span></div></li>
+          <li><span class="ck">✓</span><div>Приём и оформление заявок прямо в чате <span>— с корзиной и оплатой</span></div></li>
+          <li><span class="ck">✓</span><div>Интеграция с CRM, таблицами и оплатой <span>— заявка сразу у вас</span></div></li>
+          <li><span class="ck">✓</span><div>Рассылки и уведомления <span>— напоминания, акции, статусы заказа</span></div></li>
+          <li><span class="ck">✓</span><div>Запуск под ключ <span>— от ТЗ до рабочего бота, с поддержкой</span></div></li>
+        </ul>
+        <div class="max-cta">
+          <a class="btn max" href="#contact">Хочу бота в MAX <span class="arr">→</span></a>
+          <a class="btn outline" href="#pricing">Сколько стоит</a>
+        </div>
+      </div>
+      <div class="chatwin max">
+        <div class="cw-bar">
+          <span class="cw-ava">M</span>
+          <span class="cw-title">Бот компании<small>MAX · онлайн</small></span>
+          <span class="cw-live">live</span>
+        </div>
+        <div class="chat-body" id="maxBody"></div>
+        <div class="cw-note"><b>●</b> пример сценария бота под задачу клиента — у вас будет свой</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="dot"></span>04 · Живое демо</div>
+      <h2>Разбор письма в браузере</h2>
+      <div class="note">Вставьте письмо — увидите таблицу. Всё считается у вас в браузере, данные никуда не уходят.</div>
+    </div>
+    <div class="grid2 reveal">
+      <div>
+        <textarea id="demoInput" class="demo-ta" spellcheck="false"></textarea>
+        <div style="display:flex;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap">
+          <button class="btn primary" id="demoBtn" type="button">Обработать письмо <span class="arr">→</span></button>
+          <span class="mono" style="color:var(--dim);font-size:12px">данные никуда не уходят</span>
+        </div>
+        <p class="demo-hint">Это демо на правилах — как и первый пилот. В боевой версии подключается ваш поток писем, CRM и справочник артикулов.</p>
+      </div>
+      <div class="outcard">
+        <div class="cw-bar">
+          <span class="cw-ava">AI</span>
+          <span class="cw-title">Живой разбор заявки<small>goldman.work</small></span>
+          <span class="cw-live">live</span>
+        </div>
+        <div class="out-body" id="demoOut"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="botdemo" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="dot"></span>05 · Демо</div>
+      <h2>ИИ-администратор 24/7</h2>
+      <div class="note">Напишите, как написал бы ваш клиент.</div>
+    </div>
+    <div class="grid2 reveal">
+      <div class="chatwin">
+        <div class="cw-bar">
+          <span class="cw-ava">ДД</span>
+          <span class="cw-title">Клиника «ДемоДент»<small>ИИ-администратор · онлайн</small></span>
+          <span class="cw-live">live</span>
+        </div>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-input-row">
+          <input id="chatInput" class="chat-input" type="text" placeholder="Напишите вопрос клиента…" maxlength="200">
+          <button class="btn primary chat-send" id="chatSend" type="button"><span class="arr">→</span></button>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:14px">Клиент пишет в 23:47.<br>Кто отвечает?</h3>
+        <p style="color:var(--muted);font-size:15.5px;margin-bottom:14px">ИИ-администратор отвечает за 5 секунд в MAX, Telegram, WhatsApp и на сайте: снимает типовые вопросы, записывает, напоминает. Живой администратор утром видит готовые записи — а не разбор ночных сообщений.</p>
+        <p style="color:var(--muted);font-size:15.5px;margin-bottom:14px">Попробуйте: спросите про цены, анестезию, ДМС, рассрочку — или напишите «хочу записаться». Сложный вопрос бот честно передаст живому человеку — так и в бою: <b style="color:var(--fg)">человек в контуре</b>.</p>
+        <p class="mono" style="color:var(--dim);font-size:12px;line-height:1.8">демо на правилах · в боевой версии — ваше расписание, ваш прайс, ваша CRM</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="examples" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="dot"></span>06 · Примеры</div>
+      <h2>Примеры работы</h2>
+      <div class="note">Живые отчёты — откройте и потрогайте.</div>
+    </div>
+    <div class="cards three reveal">
+      <a class="card" href="examples/email1.html" target="_blank">
+        <span class="sn">ПРИМЕР 01</span>
+        <h3>Чистая заявка</h3>
+        <p>Письмо дилера с тремя позициями и всеми данными. ИИ собирает таблицу полностью — менеджеру остаётся один взгляд.</p>
+        <span class="for">→ ОТКРЫТЬ ОТЧЁТ ↗</span>
+      </a>
+      <a class="card" href="examples/email2.html" target="_blank">
+        <span class="sn">ПРИМЕР 02</span>
+        <h3>Заявка с дырами</h3>
+        <p>Дилер забыл количество и цвет. Система не угадывает: в таблице — то, что есть, и жёлтым — что уточнить у клиента.</p>
+        <span class="for">→ ОТКРЫТЬ ОТЧЁТ ↗</span>
+      </a>
+      <a class="card" href="examples/email3.html" target="_blank">
+        <span class="sn">ПРИМЕР 03</span>
+        <h3>Небрежное письмо</h3>
+        <p>«Шкафов 15, кроватей 5» — и ничего больше. Даже так вытаскиваются позиции, а пробелы по сроку и телефону честно помечены.</p>
+        <span class="for">→ ОТКРЫТЬ ОТЧЁТ ↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow"><span class="dot"></span>07 · Цены</div>
+      <h2>Цены</h2>
+      <div class="note">Фиксируем до старта — без «дополнительно по договорённости».</div>
+    </div>
+    <div class="price reveal">
+      <div class="prow">
+        <span class="pn">Демо</span>
+        <span class="pd">Разбор 3–5 ваших реальных писем, таблица + отчёт «что уточнить»</span>
+        <span class="pp">0 ₽<small>1 день</small></span>
+        <span class="pg">увидите результат <b>до любых денег</b></span>
+      </div>
+      <div class="prow">
+        <span class="pn">Пилот</span>
+        <span class="pd">Боевая работа на вашем потоке, замер «до/после» по фактам</span>
+        <span class="pp">от 10 000 ₽<small>2 недели</small></span>
+        <span class="pg"><b>гарантия возврата</b> — см. ниже</span>
+      </div>
+      <div class="prow">
+        <span class="pn">Внедрение</span>
+        <span class="pd">Подключение к CRM и каналам, настройка под ваши артикулы и процесс</span>
+        <span class="pp">от 30 000 ₽<small>разово</small></span>
+        <span class="pg">amoCRM · Bitrix24 · почта · мессенджеры</span>
+      </div>
+      <div class="prow max-row">
+        <span class="pn">Бот в MAX</span>
+        <span class="pd">Бот в мессенджере MAX под ключ: сценарии, кнопки, приём заявок, интеграции</span>
+        <span class="pp">от 30 000 ₽<small>под ключ</small></span>
+        <span class="pg">сроки и смета — <b>фиксируем до старта</b></span>
+      </div>
+      <div class="prow">
+        <span class="pn">Поддержка</span>
+        <span class="pd">Развитие сценариев, контроль качества распознавания, месячный отчёт</span>
+        <span class="pp">от 15 000 ₽<small>в месяц</small></span>
+        <span class="pg">отмена в любой момент</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="guar">
+  <div class="wrap reveal">
+    <div class="guar-card">
+      <div class="eyebrow"><span class="dot"></span>ГАРАНТИЯ</div>
+      <h2>Пилот не сэкономил менеджерам время? Вернём оплату. Считаем вместе и по фактам.</h2>
+      <p>Скорость первого ответа, часы, потраченные на разбор писем, деньги с вернувшихся заявок. Все цифры видны в таблице — вы контролируете результат, а не верите на слово.</p>
+    </div>
+  </div>
+</div>
+
+<section id="contact">
+  <div class="wrap contact-grid">
+    <div class="contact reveal">
+      <h2>Покажем демо<br>на ваших письмах.</h2>
+      <p>Напишите или позвоните — достаточно одного предложения о вашем бизнесе. Дальше сами спросим, что нужно: обычно хватает 15 минут разговора.</p>
+      <div class="hero-cta" style="margin-top:30px">
+        <a class="btn primary" href="mailto:bendikdanicx@yandex.ru?subject=Демо%20ИИ-обработки%20заявок">Написать в почту <span class="arr">→</span></a>
+        <a class="btn outline" href="tel:+79012826132">Позвонить</a>
+      </div>
+    </div>
+    <div class="clist reveal">
+      <div class="crow"><span class="k">Телефон</span><a class="v" href="tel:+79012826132">+7 (901) 282-61-32<small>Данил · позвонить или WhatsApp</small></a></div>
+      <div class="crow"><span class="k">Почта</span><a class="v" href="mailto:bendikdanicx@yandex.ru">bendikdanicx@yandex.ru<small>ответ в течение пары часов</small></a></div>
+      <div class="crow"><span class="k">Формат работы</span><span class="v">удалённо · вся Россия<small>договор-оферта · оплата по факту этапа</small></span></div>
+      <div class="crow"><span class="k">Первый шаг</span><span class="v">демо на ваших письмах<small>бесплатно · 1 день</small></span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <span class="muted">© 2026 GOLDMAN.WORK</span>
+    <div class="foot-links">
+      <a href="#services">Услуги</a>
+      <a href="#max">Боты в MAX</a>
+      <a href="#pricing">Цены</a>
+      <a href="#contact">Контакты</a>
+      <a href="index.html">Тёмная версия ↗</a>
+    </div>
+    <span class="muted">ИИ-автоматизация · пилоты с гарантией</span>
+  </div>
+</footer>
+
+<script>
+// бегущая строка технологий
+(function(){
+  var items = ["ИИ-обработка заявок","MAX","Telegram","WhatsApp","amoCRM","Bitrix24","ИИ-администратор 24/7","Авто-воронки","Напоминания","Разбор писем","Боты под ключ","CRM"];
+  var track = document.getElementById("mqTrack");
+  if (!track) return;
+  var html = items.map(function(t){ return "<span class='pill'>" + t + "</span>"; }).join("");
+  track.innerHTML = html + html; // две копии для бесшовной прокрутки
+})();
+
+// ---------------- живое демо: разбор письма в браузере ----------------
+(function(){
+  var SAMPLE = "Тема: Заказ на март — кухни Гамма\n\nДобрый день!\n\nОтправляем заявку на поставку:\n1. Кухня Гамма, цвет дуб сонома — 8 шт, арт. KG-120\n2. Кухня Гамма, цвет венге — 6 шт, арт. KG-120\n3. Кухня Модерн, белые фасады — 4 шт, арт. KM-210\n\nСрок: к 15 марта. Доставка в город Подольск.\nВопросы по комплектации фурнитурой уточню отдельно.\n\nМенеджер закупок, Ольга\n+7 (916) 345-12-78";
+
+  var STEMS = ["кухн","гарнитур","шкаф","купе","комод","стол","стул","кресл","кроват","тумб","прихож","диван","матрас","фасад","столешниц","пенал","сервант","витрин"];
+  var RE_MODEL1 = /(?:модель|серия)\s*[:№]?\s*([A-ZА-ЯЁ0-9][0-9A-Za-zА-Яа-яЁё\- ]{1,30}?)(?=[,.;—–\n]|$)/;
+  var RE_MODEL2 = /«([^»]{2,40})»/;
+  var RE_MODEL3 = /(^|[^0-9A-Za-zА-Яа-яЁё\-])(кухня|шкаф-купе|шкаф|купе|комод|стол|стул|кресло|кровать|тумба|диван|гарнитур)\s+([А-ЯЁA-Z][0-9A-Za-zА-Яа-яЁё]*(?:-\d+)?)/i;
+  var RE_UNIT = /(?:^|[^\wа-яё\-])(\d{1,4})\s*(шт|штук|компл|пог\.?\s?м|м2|м²)/i;
+  var RE_BARE = /(?:^|[^\w\-.])(\d{1,4})(?![\w\-%])/g;
+  var RE_ART = /(?:арт\.?|артикул)\s*[:№]?\s*([0-9A-Za-zА-Яа-яЁё\-\/]{2,})/i;
+  var RE_BULLET = /^\s*(?:\d{1,2}[.)]\s*|[-–—•*]\s*)/;
+  var MONTHS = "(январ|феврал|март|апрел|ма[йяе]|июн|июл|август|сентябр|октябр|ноябр|декабр)";
+  var RE_DEADLINE1 = new RegExp("(?:к|до)\\s?(\\d{1,2})\\s?(?:числа?\\s?)?" + MONTHS + "[а-яё]*", "i");
+  var RE_DEADLINE2 = new RegExp("(?:к|до)\\s?" + MONTHS + "[а-яё]*", "i");
+  var RE_DEADLINE3 = /(?:к|до)\s?\d{1,2}\s?(?:числа|числ\.)/i;
+  var RE_DEADLINE4 = /(?:^|[^\w\-.])(\d{1,2}[./]\d{1,2}(?:[./]\d{2,4})?)(?![\w\-.])/;
+  var RE_DEADLINE5 = /в\s+течение\s+\d+\s+(?:дн|недел|нед)/i;
+  var RE_PHONE = /(?:\+7|8)[\s(\-]{0,2}\d{3}[)\s\-]{0,2}\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g;
+  var RE_CITY1 = /(?:г\.|город)\s*([А-ЯЁ][а-яё\-]{2,})/;
+  var RE_CITY2 = /(?:доставк\w*|отгрузк\w*)\s*(?:в|по)\s+([А-ЯЁ][а-яё\-]{2,})/;
+  var RE_COLOR_STRONG = /(венг|дуб|орех|зеркал|графит|капучино|шимо|сонома|вяз|ясен|бук)[а-яё]*/i;
+  var RE_COLOR_WEAK = /(бел|черн|чёрн|сер|бежев|красн|син|зелён|зелен)[а-яё]*/i;
+
+  function hasFurn(s){
+    var low = s.toLowerCase();
+    for (var i = 0; i < STEMS.length; i++) if (low.indexOf(STEMS[i]) >= 0) return true;
+    return false;
+  }
+  function findModel(s){
+    var m = RE_MODEL1.exec(s); if (m) return m[1].trim();
+    m = RE_MODEL2.exec(s); if (m) return m[1].trim();
+    m = RE_MODEL3.exec(s); if (m) return (m[2] + " " + m[3]).trim();
+    return "";
+  }
+  function qtyNumbers(s){
+    var out = [], m, re = new RegExp(RE_UNIT.source, "gi");
+    while ((m = re.exec(s))) out.push(m[1]);
+    re = new RegExp(RE_BARE.source, "g");
+    while ((m = re.exec(s))) out.push(m[1]);
+    return out.filter(function(v, i, a){ return a.indexOf(v) === i; });
+  }
+  function findQty(s){
+    var m = RE_UNIT.exec(s);
+    if (m) return { qty: m[1] + " " + m[2].toLowerCase().replace("штук", "шт"), num: parseInt(m[1], 10) };
+    if (hasFurn(s)) {
+      var nums = qtyNumbers(s);
+      if (nums.length === 1) return { qty: nums[0], num: parseInt(nums[0], 10) };
+    }
+    return { qty: "", num: null };
+  }
+  function findColors(s){
+    var found = [], m;
+    [RE_COLOR_STRONG, RE_COLOR_WEAK].forEach(function(rx){
+      var re = new RegExp(rx.source, "gi");
+      while ((m = re.exec(s))) {
+        var v = m[0].toLowerCase();
+        if (found.indexOf(v) < 0 && found.length < 3) found.push(v);
+      }
+    });
+    return found.join(", ");
+  }
+  function looksLikePosition(s){
+    if (!(hasFurn(s) || RE_MODEL1.test(s) || RE_MODEL2.test(s))) return false;
+    return !!(findModel(s) || findQty(s).num !== null || RE_ART.test(s));
+  }
+  function parsePositions(text){
+    var out = [], seen = {}, lines = text.split("\n");
+    lines.forEach(function(raw){
+      var line = raw.replace(RE_BULLET, "").trim();
+      if (line.length < 3) return;
+      if (!(hasFurn(line) || RE_MODEL1.test(line) || RE_MODEL2.test(line))) return;
+      var parts = null;
+      if (qtyNumbers(line).length > 1 && /[,;]/.test(line)) {
+        var subs = line.split(/[,;]/).map(function(p){ return p.trim(); }).filter(Boolean);
+        if (subs.filter(looksLikePosition).length >= 2) parts = subs.filter(looksLikePosition);
+      }
+      var build = function(seg){
+        var q = findQty(seg), am = RE_ART.exec(line), mm = findModel(seg) || findModel(line);
+        var key = (mm.toLowerCase()) + "|" + (findColors(seg).toLowerCase()) + "|" + q.num;
+        if (seen[key]) return;
+        seen[key] = 1;
+        out.push({ model: mm, art: am ? am[1] : "", qty: q.qty, num: q.num,
+                   color: findColors(seg) || findColors(line), note: seg.slice(0, 90) });
+      };
+      if (parts) parts.forEach(build);
+      else if (looksLikePosition(line)) build(line);
+    });
+    return out;
+  }
+  function parseOrder(text){
+    var deadline = "", m;
+    [RE_DEADLINE1, RE_DEADLINE2, RE_DEADLINE3, RE_DEADLINE4, RE_DEADLINE5].some(function(rx){
+      m = rx.exec(text);
+      if (m) { deadline = m[0].trim(); return true; }
+      return false;
+    });
+    var city = "";
+    [RE_CITY1, RE_CITY2].some(function(rx){
+      m = rx.exec(text);
+      if (m) { city = m[1]; return true; }
+      return false;
+    });
+    var phones = [], pm;
+    var pre = new RegExp(RE_PHONE.source, "g");
+    while ((pm = pre.exec(text))) if (phones.indexOf(pm[0]) < 0) phones.push(pm[0]);
+    return { deadline: deadline, city: city, phones: phones.slice(0, 2) };
+  }
+  function missing(p, o){
+    var w = [];
+    p.forEach(function(x, i){
+      var t = x.model || (x.note.slice(0, 30) + "…");
+      if (x.num === null) w.push("Позиция " + (i + 1) + " (" + t + "): не указано количество");
+      if (!x.color) w.push("Позиция " + (i + 1) + " (" + t + "): не указан цвет/материал");
+      if (!x.model) w.push("Позиция " + (i + 1) + ": модель не распознана — проверить вручную");
+    });
+    if (!o.deadline) w.push("Не указан срок поставки");
+    if (!o.phones.length) w.push("В письме нет контактного телефона");
+    return w;
+  }
+  function esc(s){
+    var d = document.createElement("div"); d.textContent = s; return d.innerHTML;
+  }
+  function render(text){
+    var out = document.getElementById("demoOut");
+    if (text.trim().length < 10) {
+      out.innerHTML = "<span class='dwarn'>Вставьте текст письма — хотя бы пару строк.</span>";
+      return;
+    }
+    var pos = parsePositions(text), o = parseOrder(text), w = missing(pos, o);
+    var html = "<div class='dhead'>ИЗВЛЕЧЁННЫЕ ПОЗИЦИИ</div>";
+    if (!pos.length) {
+      html += "<div class='dwarn'>Позиции не распознаны. В демо работают письма с мебельной номенклатурой — в боевой версии словарь подстраивается под вашу номенклатуру.</div>";
+    } else {
+      html += "<table class='demo-table'><tr><th>№</th><th>МОДЕЛЬ</th><th>АРТ.</th><th>КОЛ-ВО</th><th>ЦВЕТ</th></tr>";
+      pos.forEach(function(p, i){
+        html += "<tr><td>" + (i + 1) + "</td><td>" + (p.model ? esc(p.model) : "<span class='dwarn'>не распознана</span>") +
+                "</td><td class='weak'>" + (p.art ? esc(p.art) : "—") +
+                "</td><td>" + (p.qty ? esc(p.qty) : "<span class='dwarn'>кол-во?</span>") +
+                "</td><td>" + (p.color ? esc(p.color) : "<span class='dwarn'>цвет?</span>") + "</td></tr>";
+      });
+      html += "</table>";
+    }
+    html += "<div class='dhead'>ЧТО УТОЧНИТЬ МЕНЕДЖЕРУ</div>";
+    if (w.length) {
+      html += w.map(function(x){ return "<div class='dwarn'>⚠ " + esc(x) + "</div>"; }).join("");
+    } else {
+      html += "<div class='dok'>✓ Все данные на месте — заявка готова для менеджера</div>";
+    }
+    html += "<div class='dmeta'>Срок: " + (o.deadline ? esc(o.deadline) : "—") +
+            " · Город: " + (o.city ? esc(o.city) : "—") +
+            " · Тел: " + (o.phones.length ? esc(o.phones.join(", ")) : "—") + "</div>";
+    out.innerHTML = html;
+  }
+
+  document.getElementById("demoInput").value = SAMPLE;
+  document.getElementById("demoBtn").addEventListener("click", function(){
+    render(document.getElementById("demoInput").value);
+  });
+  render(SAMPLE);
+  window.demoParse = function(text){
+    var p = parsePositions(text), o = parseOrder(text);
+    return { positions: p, order: o, warnings: missing(p, o) };
+  };
+})();
+
+// ---------------- живое демо: ИИ-администратор ----------------
+(function(){
+  var FAQ = [
+    { keys: ["больно", "болит", "страшно", "боюсь", "анестез", "укол", "шприц"],
+      a: "Понимаю переживания — это нормально 🙂 Мы работаем только с современной анестезией: перед уколом врач наносит обезболивающий гель, вы почти ничего не чувствуете. Приходите сначала на бесплатную консультацию — просто осмотр и разговор, без лечения." },
+    { keys: ["дмс", "страхов", "полис"],
+      a: "Да, работаем с ДМС. Перечень услуг зависит от вашей страховой — напишите её название, администратор проверит по базе и подтвердит при записи." },
+    { keys: ["ребен", "ребён", "дет", "малыш"],
+      a: "Конечно! У нас ведут детских стоматологов: лечение молочных зубов, герметизация фиссур, профилактика. Первый визит обычно — просто знакомство с кабинетом, в игровой форме." },
+    { keys: ["рассроч", "кредит", "картой", "оплат"],
+      a: "Есть рассрочка 0% на лечение от 20 000 ₽ — оформляется за 10 минут прямо в клинике. Принимаем карты и безналичную оплату." },
+    { keys: ["адрес", "где вы", "как добраться", "метро", "парковк"],
+      a: "Мы находимся: г. Москва, ул. Примерная, д. 10, 1 этаж. 5 минут от метро, есть парковка во дворе. График: Пн–Сб 9:00–21:00, Вс 10:00–18:00." },
+    { keys: ["график", "работаете", "время работы", "часы", "выходн"],
+      a: "Работаем: Пн–Сб 9:00–21:00, Вс 10:00–18:00. Записаться можно прямо здесь — я подберу удобное время." },
+    { keys: ["цен", "стоит", "стоимость", "сколько"],
+      a: "Основной прайс:\n• Консультация и осмотр — бесплатно\n• Чистка зубов (Air Flow) — 6 500 ₽\n• Лечение кариеса — от 4 900 ₽\n• Удаление зуба — от 3 500 ₽\n• Имплантация — от 35 000 ₽\n\nТочный план врач составит после осмотра — консультация бесплатная. Записать вас?" },
+    { keys: ["врач", "доктор", "специалист", "опыт", "стаж"],
+      a: "В клинике 6 врачей, средний стаж — 12 лет, у каждого своя специализация: имплантология, ортодонтия, детская стоматология. Напишите, что беспокоит, — подберу подходящего специалиста." },
+    { keys: ["запис", "прием", "приём", "хочу к вам", "поставить"],
+      a: "С удовольствием помогу! Скажите, какая услуга интересует и в какой день удобно, — забронирую время и напомню о визите за день." }
+  ];
+  var FALLBACK = "Хороший вопрос — на него точно ответит врач. Я передал его администратору: она перезвонит в течение 15 минут в рабочее время. А ещё можно записаться на бесплатную консультацию — спросите меня про запись.";
+  var body = document.getElementById("chatBody"),
+      input = document.getElementById("chatInput");
+
+  function addMsg(text, who){
+    var d = document.createElement("div");
+    d.className = "msg " + who;
+    var w = document.createElement("span");
+    w.className = "who";
+    w.textContent = who === "bot" ? "ИИ-АДМИНИСТРАТОР" : "КЛИЕНТ";
+    d.appendChild(w);
+    d.appendChild(document.createTextNode(text));
+    body.appendChild(d);
+    body.scrollTop = body.scrollHeight;
+  }
+  function answer(q){
+    var low = q.toLowerCase(), res = null;
+    for (var i = 0; i < FAQ.length; i++) {
+      for (var k = 0; k < FAQ[i].keys.length; k++) {
+        if (low.indexOf(FAQ[i].keys[k]) >= 0) { res = FAQ[i].a; break; }
+      }
+      if (res) break;
+    }
+    return res || FALLBACK;
+  }
+  function send(){
+    var q = input.value.trim();
+    if (!q) return;
+    input.value = "";
+    addMsg(q, "user");
+    var t = document.createElement("div");
+    t.className = "typing";
+    t.textContent = "ИИ печатает…";
+    body.appendChild(t);
+    body.scrollTop = body.scrollHeight;
+    setTimeout(function(){
+      t.remove();
+      addMsg(answer(q), "bot");
+    }, 600);
+  }
+  document.getElementById("chatSend").addEventListener("click", send);
+  input.addEventListener("keydown", function(e){ if (e.key === "Enter") send(); });
+
+  addMsg("Здравствуйте! Это ИИ-администратор клиники «ДемоДент». Я на связи 24/7: отвечаю на вопросы и записываю на приём. Чем помочь? 🙂", "bot");
+  window.chatDemo = answer;
+})();
+
+// терминал: 4 сценария под шаги
+var SCRIPTS = [
+  "<span class='c'>$ входящее:</span> <span class='w'>письмо от дилера · 3 позиции</span>\n<span class='c'>$ разбор:</span>\n  01 <span class='w'>Кухня Гамма</span> · арт KG-120 · 8 шт · дуб сонома\n  02 <span class='w'>Кухня Гамма</span> · арт KG-120 · 6 шт · венге\n  03 <span class='w'>Кухня Модерн</span> · арт KM-210 · 4 шт · белые\n<span class='c'>$ проверка данных:</span>\n  <span class='y'>! позиция 3: не указан срок поставки</span>\n  <span class='g'>✓ остальное полное</span>\n<span class='c'>$ таблица → менеджеру:</span> <span class='g'>0.8 сек</span> <span class='c'>(вместо 20 минут руками)</span>",
+  "<span class='c'>$ поток:</span> <span class='w'>47 писем за неделю пилота</span>\n<span class='c'>$ замер «до»:</span>  первый ответ — <span class='y'>4 ч 12 мин</span>\n<span class='c'>$ замер «после»:</span> первый ответ — <span class='g'>18 секунд</span>\n<span class='c'>$ часы менеджера на разбор писем:</span>\n  было <span class='y'>9 ч/нед</span> → стало <span class='g'>40 мин/нед</span> (проверка таблиц)\n<span class='c'>$ заявки вне рабочих часов:</span> <span class='w'>11 из 47</span> <span class='c'>— раньше терялись все</span>",
+  "<span class='c'>$ интеграция:</span>\n  почта        <span class='g'>✓ подключена</span>\n  amoCRM       <span class='g'>✓ сделки создаются сами</span>\n  telegram     <span class='g'>✓ уведомления менеджеру</span>\n  напоминания  <span class='g'>✓ за день и за 2 часа</span>\n<span class='c'>$ ваши артикулы:</span> <span class='w'>в справочнике — распознавание точнее</span>\n<span class='c'>$ статус:</span> <span class='g'>система работает на вашем потоке</span>",
+  "<span class='c'>$ каждый месяц:</span>\n  — отчёт: скорость, часы, деньги <span class='g'>✓</span>\n  — новые сценарии под ваш процесс <span class='g'>✓</span>\n  — контроль качества распознавания <span class='g'>✓</span>\n<span class='c'>$ отмена:</span> <span class='w'>в любой момент, без штрафов</span>\n<span class='c'>$ задача:</span> <span class='y'>чтобы система со временем работала лучше, а не хуже</span>"
+];
+var termBody = document.getElementById("termBody");
+function showTerm(i){ termBody.innerHTML = SCRIPTS[i].replace(/\n/g, "<br>"); }
+showTerm(0);
+document.querySelectorAll(".step").forEach(function(el){
+  el.addEventListener("mouseenter", function(){
+    document.querySelectorAll(".step").forEach(function(s){ s.classList.remove("on"); });
+    el.classList.add("on");
+    showTerm(+el.dataset.term);
+  });
+});
+
+// появление секций
+if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add("vis"); io.unobserve(e.target); } });
+  }, { threshold: 0.06, rootMargin: "0px 0px -30px 0px" });
+  document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
+  setTimeout(function(){
+    document.querySelectorAll(".reveal:not(.vis)").forEach(function(el){
+      var r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) el.classList.add("vis");
+    });
+  }, 2000);
+} else {
+  document.querySelectorAll(".reveal").forEach(function(el){ el.classList.add("vis"); });
+}
+
+// прогресс прокрутки
+(function(){
+  var bar = document.getElementById("sbar");
+  if (!bar) return;
+  function upd(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var p = max > 0 ? h.scrollTop / max : 0;
+    bar.style.width = (p * 100) + "%";
+  }
+  window.addEventListener("scroll", upd, { passive: true });
+  window.addEventListener("resize", upd);
+  upd();
+})();
+
+// MAX-бот: авто-демо сценария
+(function(){
+  var body = document.getElementById("maxBody");
+  if (!body) return;
+  var SCRIPT = [
+    { who: "bot",  t: "Здравствуйте! Это бот компании в MAX 🤖 Помогу выбрать услугу, рассчитать стоимость и оставить заявку — прямо здесь, в чате." },
+    { who: "user", t: "Сколько стоит бот под ключ?" },
+    { who: "bot",  t: "Бот под ключ — от 30 000 ₽: сценарии, меню с кнопками, приём заявок и интеграция с вашей CRM. Под какую задачу нужен бот?" },
+    { who: "user", t: "У меня доставка еды" },
+    { who: "bot",  t: "Отлично! Соберу меню с кнопками, корзину, оплату, статусы заказа и уведомления курьеру. Оставьте номер — пришлю смету и примеры в MAX сегодня." },
+    { who: "user", t: "+7 905 ..." },
+    { who: "bot",  t: "Принял, заявка создана ✅ Менеджер свяжется в течение 15 минут. А пока могу прислать примеры готовых ботов — отправить?" }
+  ];
+  function addMsg(m){
+    var d = document.createElement("div");
+    d.className = "msg " + m.who;
+    var w = document.createElement("span");
+    w.className = "who";
+    if (m.who === "bot") {
+      var lg = document.createElement("span");
+      lg.className = "mxlogo"; lg.textContent = "M";
+      w.appendChild(lg);
+      w.appendChild(document.createTextNode("БОТ В MAX"));
+    } else {
+      w.textContent = "КЛИЕНТ";
+    }
+    d.appendChild(w);
+    d.appendChild(document.createTextNode(m.t));
+    body.appendChild(d);
+    body.scrollTop = body.scrollHeight;
+  }
+  var started = false;
+  function play(){
+    if (started) return;
+    started = true;
+    var i = 0;
+    (function step(){
+      if (i >= SCRIPT.length) return;
+      var m = SCRIPT[i++];
+      if (m.who === "bot") {
+        var t = document.createElement("div");
+        t.className = "typing"; t.textContent = "бот печатает…";
+        body.appendChild(t); body.scrollTop = body.scrollHeight;
+        setTimeout(function(){ t.remove(); addMsg(m); setTimeout(step, 950); }, 850);
+      } else {
+        addMsg(m); setTimeout(step, 700);
+      }
+    })();
+  }
+  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    var io2 = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if (e.isIntersecting) { play(); io2.disconnect(); } });
+    }, { threshold: 0.3 });
+    io2.observe(body);
+  } else {
+    SCRIPT.forEach(addMsg);
+  }
+})();
+</script>
+</body>
+</html>
