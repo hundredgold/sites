@@ -343,12 +343,21 @@ let reqs = [];
 let meters = [];
 
 /* ---------- инициализация ---------- */
+let booted = false;
+let demoTimer = null;
+
 async function init(){
   // SDK мог загрузиться (внутри MAX) или не загрузиться (браузер/офлайн).
-  // Внутри MAX объект WebApp есть всегда; initData может быть пустым,
-  // поэтому определяем режим по наличию самого объекта, а не по initData.
+  // Внутри MAX есть window.WebApp И заполнен initData (подписанные данные
+  // пользователя). В обычном браузере WebApp либо нет, либо initData пустой —
+  // скрипт SDK в браузере создаёт заглушку, поэтому одного WebApp мало.
   WA = window.WebApp || null;
-  IN_MAX = !!WA && typeof WA.getViewportSize === 'function';
+  IN_MAX = !!WA && !!WA.initData && String(WA.initData).length > 0;
+
+  // первый вызов мог произойти до загрузки SDK — тогда перерисовываем
+  // состояние, но не сбрасываем уже введённые пользователем данные
+  const first = !booted;
+  booted = true;
 
   // имя пользователя из MAX
   if(IN_MAX){
@@ -366,8 +375,18 @@ async function init(){
       WA.BackButton?.show?.();
       WA.BackButton?.onClick?.(()=>{ try{ WA.BackButton.hide(); }catch(e){} });
     }catch(e){}
-  } else {
-    document.getElementById('demoBar').classList.add('on');
+    // мы внутри MAX — убираем плашку демо-режима, даже если она
+    // успела включиться при первом (раннем) вызове init
+    clearTimeout(demoTimer);
+    document.getElementById('demoBar').classList.remove('on');
+  } else if(!demoTimer){
+    // SDK ещё грузится — не пугаем плашкой сразу, даём 2.5 с.
+    // Если initData так и не появился, значит мы правда вне MAX.
+    demoTimer = setTimeout(()=>{
+      if(!window.WebApp || !window.WebApp.initData){
+        document.getElementById('demoBar').classList.add('on');
+      }
+    }, 2500);
   }
 
   // подгоняем высоту под вьюпорт клиента
@@ -378,8 +397,10 @@ async function init(){
     }catch(e){}
   }
 
-  reqs = JSON.parse(JSON.stringify(DEMO_REQS));
-  meters = JSON.parse(JSON.stringify(DEMO_METERS));
+  if(first){
+    reqs = JSON.parse(JSON.stringify(DEMO_REQS));
+    meters = JSON.parse(JSON.stringify(DEMO_METERS));
+  }
 
   renderReqs();
   renderMeters();
@@ -388,8 +409,9 @@ async function init(){
 // точка входа: вызывается загрузчиком SDK (или страховочным таймаутом)
 window.__miniappBoot = init;
 
-// если SDK уже успел отработать раньше, чем определился init — стартуем сейчас
-if(window.__sdkReady) init();
+// стартуем сразу, не дожидаясь SDK: интерфейс рисуется из локальных данных,
+// а режим (MAX / демо) уточняется по факту появления window.WebApp
+init();
 
 /* ---------- рендер заявок ---------- */
 function renderReqs(){
