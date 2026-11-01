@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Боты в MAX для бизнеса и ЖКХ — Данил, Иваново</title>
+<meta name="description" content="Чат-боты и мини-приложения в мессенджере MAX: приём заявок, показания счётчиков, запись клиентов. Внедрение за 3 дня, от 15 000 ₽. Живое демо.">
+<meta property="og:title" content="Боты в MAX для бизнеса и ЖКХ">
+<meta property="og:description" content="Приём заявок, показания счётчиков, запись клиентов. Внедрение за 3 дня, от 15 000 ₽.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d0c; --panel:#141413; --panel2:#191917;
+  --cream:#efece3; --muted:#8f8c82; --dim:#5c5a53;
+  --accent:#e3b93d; --border:#262624; --border2:#33332f;
+  --serif:'Source Serif 4',Georgia,serif;
+  --mono:'JetBrains Mono',Consolas,monospace;
+  --sans:'Inter',Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.mono{font-family:var(--mono)}
+.up{text-transform:uppercase;letter-spacing:.14em;font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+/* ---------- шапка ---------- */
+header{position:sticky;top:0;z-index:50;background:rgba(13,13,12,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:var(--mono);font-size:13px;letter-spacing:.12em;font-weight:500}
+.logo span{color:var(--accent)}
+.nav-links{display:flex;gap:26px}
+.nav-links a{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--cream)}
+.nav-cta{font-family:var(--mono);font-size:11px;letter-spacing:.12em;border:1px solid var(--border2);padding:9px 16px;border-radius:2px;transition:.2s;white-space:nowrap}
+.nav-cta:hover{background:var(--accent);color:#0d0d0c;border-color:var(--accent)}
+@media(max-width:760px){.nav-links{display:none}}
+
+/* ---------- герой ---------- */
+.hero{padding:96px 0 80px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;top:-200px;right:-160px;width:620px;height:620px;
+  background:radial-gradient(circle,rgba(227,185,61,.10),transparent 68%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--border2);
+  border-radius:99px;padding:7px 15px;margin-bottom:30px}
+.hero-tag i{width:6px;height:6px;border-radius:50%;background:var(--accent);display:block;
+  box-shadow:0 0 0 0 rgba(227,185,61,.6);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(227,185,61,.55)}70%{box-shadow:0 0 0 9px rgba(227,185,61,0)}100%{box-shadow:0 0 0 0 rgba(227,185,61,0)}}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(38px,6vw,68px);line-height:1.08;letter-spacing:-.02em;margin-bottom:26px;max-width:15ch}
+h1 em{font-style:italic;color:var(--accent)}
+.hero p{font-size:clamp(16px,1.7vw,19px);color:var(--muted);max-width:56ch;margin-bottom:38px}
+.hero p b{color:var(--cream);font-weight:500}
+.btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.13em;text-transform:uppercase;padding:15px 26px;border-radius:2px;
+  border:1px solid var(--border2);transition:.2s;cursor:pointer}
+.btn:hover{border-color:var(--cream)}
+.btn-primary{background:var(--accent);color:#0d0d0c;border-color:var(--accent);font-weight:500}
+.btn-primary:hover{background:#f0c94a;border-color:#f0c94a}
+
+/* ---------- цифры ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.stat{background:var(--bg);padding:30px 26px}
+.stat .n{font-family:var(--serif);font-size:34px;font-weight:300;color:var(--accent);letter-spacing:-.02em}
+.stat .l{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.5}
+
+/* ---------- секции ---------- */
+section{padding:80px 0}
+.sec-head{margin-bottom:44px;max-width:64ch}
+.sec-head .up{display:block;margin-bottom:16px;color:var(--accent)}
+h2{font-family:var(--serif);font-weight:300;font-size:clamp(28px,3.6vw,42px);line-height:1.15;letter-spacing:-.02em;margin-bottom:16px}
+.sec-head p{color:var(--muted);font-size:16px}
+
+/* карточки */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.card{background:var(--panel);padding:32px 28px;transition:background .2s}
+.card:hover{background:var(--panel2)}
+.card .num{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.14em;margin-bottom:18px;display:block}
+.card h3{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:12px;line-height:1.25}
+.card p{color:var(--muted);font-size:14.5px;line-height:1.65}
+.card ul{list-style:none;margin-top:16px}
+.card li{color:var(--muted);font-size:14px;padding-left:18px;position:relative;margin-bottom:7px}
+.card li::before{content:"—";position:absolute;left:0;color:var(--dim)}
+
+/* ---------- закон ---------- */
+.law{background:var(--panel);border:1px solid var(--border2);border-left:3px solid var(--accent);
+  padding:36px 38px;margin:0 0 12px;border-radius:2px}
+.law .up{color:var(--accent);display:block;margin-bottom:14px}
+.law h3{font-family:var(--serif);font-size:26px;font-weight:400;margin-bottom:14px;line-height:1.3}
+.law p{color:var(--muted);font-size:15.5px;max-width:70ch}
+.law p + p{margin-top:12px}
+.law b{color:var(--cream);font-weight:500}
+
+/* ---------- демо ---------- */
+.demo-box{background:var(--panel);border:1px solid var(--border);padding:44px 40px;text-align:center;border-radius:2px}
+.demo-box h3{font-family:var(--serif);font-size:clamp(24px,3vw,32px);font-weight:300;margin-bottom:14px}
+.demo-box p{color:var(--muted);max-width:52ch;margin:0 auto 28px;font-size:15.5px}
+.link-big{font-family:var(--mono);font-size:clamp(14px,2.4vw,19px);color:var(--accent);
+  border-bottom:1px solid rgba(227,185,61,.35);padding-bottom:3px;transition:.2s}
+.link-big:hover{border-color:var(--accent)}
+
+/* ---------- шаги ---------- */
+.steps{list-style:none;counter-reset:s}
+.steps li{counter-increment:s;position:relative;padding:0 0 32px 62px;border-left:1px solid var(--border);margin-left:18px}
+.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:-18px;top:-4px;
+  width:36px;height:36px;border:1px solid var(--border2);background:var(--bg);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--accent)}
+.steps b{display:block;font-family:var(--serif);font-size:19px;font-weight:400;margin-bottom:6px}
+.steps span{color:var(--muted);font-size:14.5px;line-height:1.6}
+
+/* ---------- цены ---------- */
+.prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.price{background:var(--panel);border:1px solid var(--border);padding:32px 28px;border-radius:2px;display:flex;flex-direction:column}
+.price.hl{border-color:var(--accent)}
+.price .up{display:block;margin-bottom:16px}
+.price .amount{font-family:var(--serif);font-size:36px;font-weight:300;color:var(--cream);letter-spacing:-.02em;margin-bottom:6px}
+.price .amount small{font-size:14px;color:var(--muted);font-family:var(--sans);font-weight:400}
+.price .note{color:var(--dim);font-size:13px;margin-bottom:20px;font-family:var(--mono)}
+.price ul{list-style:none;flex:1;margin-bottom:22px}
+.price li{color:var(--muted);font-size:14px;padding-left:18px;position:relative;margin-bottom:8px}
+.price li::before{content:"—";position:absolute;left:0;color:var(--accent)}
+
+/* ---------- контакт ---------- */
+.contact{background:var(--panel);border-top:1px solid var(--border);padding:80px 0}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+@media(max-width:820px){.contact-grid{grid-template-columns:1fr;gap:34px}}
+.contact h2{margin-bottom:18px}
+.contact p{color:var(--muted);font-size:15.5px;margin-bottom:28px}
+.c-links{display:flex;flex-direction:column;gap:14px}
+.c-link{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--bg);
+  border:1px solid var(--border);border-radius:2px;transition:.2s}
+.c-link:hover{border-color:var(--accent)}
+.c-link .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;min-width:64px}
+.c-link .v{font-size:15.5px;color:var(--cream)}
+
+footer{border-top:1px solid var(--border);padding:34px 0;color:var(--dim);font-size:12.5px}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-family:var(--mono);letter-spacing:.06em}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="logo">MAX<span>.</span>BOTS</div>
+    <nav class="nav-links">
+      <a href="#law">Требование</a>
+      <a href="#what">Что делаем</a>
+      <a href="#demo">Демо</a>
+      <a href="#prices">Цены</a>
+    </nav>
+    <a href="https://max.ru/se14860684_bot" class="nav-cta">Открыть бота</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-tag"><i></i><span class="up">Живое демо работает прямо сейчас</span></div>
+    <h1>Заявки принимает бот.<br>Вы — <em>работаете.</em></h1>
+    <p>Делаю чат-ботов и мини-приложения в национальном мессенджере MAX.
+       Заявки, показания счётчиков, запись клиентов — <b>без звонков, без тетрадки, без потерянных обращений.</b>
+       Внедрение за три дня.</p>
+    <div class="btns">
+      <a href="https://max.ru/se14860684_bot" class="btn btn-primary">Потыкать демо →</a>
+      <a href="#prices" class="btn">Сколько стоит</a>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="wrap" style="display:contents"></div>
+  <div class="stat"><div class="n">3 дня</div><div class="l">от заявки до работающего бота</div></div>
+  <div class="stat"><div class="n">24/7</div><div class="l">бот не спит, не болеет, не уходит в отпуск</div></div>
+  <div class="stat"><div class="n">от 15 000 ₽</div><div class="l">внедрение под ключ</div></div>
+  <div class="stat"><div class="n">0 ₽</div><div class="l">хостинг: работает на платформе MAX</div></div>
+</div>
+
+<section id="law">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="up">Почему сейчас</span>
+      <h2>У управляющих компаний появилась обязанность</h2>
+    </div>
+    <div class="law">
+      <span class="up">С 1 сентября 2026</span>
+      <h3>Приём обращений жителей через MAX — с фиксацией ответа</h3>
+      <p>Управляющие организации обязаны организовать взаимодействие с собственниками через
+         национальный мессенджер. Это не рекомендация — это требование, и оно уже действует.</p>
+      <p><b>Что это значит на практике:</b> звонок на бумажке больше не считается.
+         Нужен канал, где видно, кто, когда и с какой проблемой обратился — и что ему ответили.</p>
+      <p>Бот закрывает это за три дня. Житель пишет адрес и проблему, заявка с номером уходит
+         диспетчеру, время фиксируется автоматически.</p>
+    </div>
+  </div>
+</section>
+
+<section id="what" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="up">Что умеет</span>
+      <h2>Один движок — разные вывески</h2>
+      <p>Логика одна, сценарии настраиваются под отрасль. Поэтому быстро и без переплаты за «уникальную разработку».</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <span class="num">01 / ЖКХ</span>
+        <h3>Заявки в управляющую компанию</h3>
+        <p>Житель пишет адрес, выбирает категорию, описывает проблему, оставляет телефон.</p>
+        <ul>
+          <li>Заявка получает номер</li>
+          <li>Диспетчер видит её мгновенно</li>
+          <li>Время обращения зафиксировано</li>
+          <li>Ничего не теряется в тетрадке</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="num">02 / ЖКХ</span>
+        <h3>Показания счётчиков</h3>
+        <p>Вода и электричество — ввод в боте, с проверкой на ошибку.</p>
+        <ul>
+          <li>Бот не даст ввести меньше прошлого</li>
+          <li>Считает расход автоматически</li>
+          <li>Жителю не надо искать сайт</li>
+          <li>Показания сразу в базе</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="num">03 / Бизнес</span>
+        <h3>Запись клиентов</h3>
+        <p>Салоны, клиники, автосервисы, студии — услуга, день, время, подтверждение.</p>
+        <ul>
+          <li>Клиент записывается сам</li>
+          <li>Администратор не отвлекается</li>
+          <li>Напоминание о визите</li>
+          <li>Отмена в один клик</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="num">04 / Все</span>
+        <h3>Ответы без администратора</h3>
+        <p>Частые вопросы, режим работы, прайс, аварийная служба.</p>
+        <ul>
+          <li>Снимает нагрузку с персонала</li>
+          <li>Работает ночью и в выходные</li>
+          <li>Отвечает одинаково точно</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo" style="padding-top:0">
+  <div class="wrap">
+    <div class="demo-box">
+      <h3>Не верьте на слово — потыкайте</h3>
+      <p>Бот живой и работает в MAX прямо сейчас. Откройте на телефоне, нажмите «Начать» —
+         там все три сценария. Это не видео и не скриншот.</p>
+      <a href="https://max.ru/se14860684_bot" class="link-big">max.ru/se14860684_bot</a>
+      <p style="margin-top:26px;font-size:13px;color:var(--dim)">
+        Работает в приложении MAX для iOS, Android и в веб-версии.</p>
+    </div>
+  </div>
+</section>
+
+<section id="how" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="up">Как работаем</span>
+      <h2>Три дня — и он принимает заявки</h2>
+    </div>
+    <ol class="steps">
+      <li><b>Разбираем ваши процессы</b>
+        <span>Что принимаете, какие категории, кому уходит заявка, что делать с показаниями.
+              По телефону, 20 минут. Без анкет на десять страниц.</span></li>
+      <li><b>Настраиваю бота под вас</b>
+        <span>Название, услуги, тексты, кнопки. Создаю в вашем профиле на платформе MAX —
+              токен и данные остаются у вас, я не имею доступа к переписке с клиентами.</span></li>
+      <li><b>Показываю и правлю</b>
+        <span>Вы тыкаете, говорите что не так, я правлю. Пока не станет удобно вам и вашим жителям.</span></li>
+      <li><b>Передаю и остаюсь на связи</b>
+        <span>Бот работает, заявки идут. Месяц сопровождения — правки, доработки, ответы на вопросы.
+              Дальше по желанию.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="prices" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="up">Цены</span>
+      <h2>Без «от» и звёздочек</h2>
+      <p>Цена фиксируется до начала работы. Доплат по ходу нет.</p>
+    </div>
+    <div class="prices">
+      <div class="price">
+        <span class="up">Базовый</span>
+        <div class="amount">15 000 <small>₽</small></div>
+        <div class="note">1 сценарий · 3 дня</div>
+        <ul>
+          <li>Приём заявок с уведомлением</li>
+          <li>Настройка под ваш бизнес</li>
+          <li>Ответы на частые вопросы</li>
+          <li>14 дней поддержки</li>
+        </ul>
+        <a href="#contact" class="btn">Обсудить</a>
+      </div>
+      <div class="price hl">
+        <span class="up">Для УК и ТСЖ</span>
+        <div class="amount">25 000 <small>₽</small></div>
+        <div class="note">заявки + счётчики · 3 дня</div>
+        <ul>
+          <li>Заявки в диспетчерскую с номером</li>
+          <li>Приём показаний с проверкой</li>
+          <li>Уведомления в рабочий чат</li>
+          <li>Бот в вашем профиле MAX</li>
+          <li>30 дней поддержки</li>
+        </ul>
+        <a href="#contact" class="btn btn-primary">Обсудить</a>
+      </div>
+      <div class="price">
+        <span class="up">Под ключ</span>
+        <div class="amount">40 000 <small>₽</small></div>
+        <div class="note">все сценарии · 5 дней</div>
+        <ul>
+          <li>Заявки, счётчики, запись</li>
+          <li>Мини-приложение внутри MAX</li>
+          <li>Интеграция с вашей CRM</li>
+          <li>Обучение сотрудников</li>
+          <li>60 дней поддержки</li>
+        </ul>
+        <a href="#contact" class="btn">Обсудить</a>
+      </div>
+    </div>
+    <p style="margin-top:24px;color:var(--dim);font-size:13.5px">
+      Сопровождение после внедрения — 3 000 ₽/мес: правки, доработки, мониторинг.
+      Отказаться можно в любой момент.
+    </p>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap contact-grid">
+    <div>
+      <span class="up" style="display:block;margin-bottom:16px;color:var(--accent)">Связаться</span>
+      <h2>Покажу бота<br>за пять минут</h2>
+      <p>Позвоните или напишите — открою демо на вашем телефоне и покажу, как это выглядит
+         для жителя или клиента. Без презентаций и созвонов на час.</p>
+      <p style="font-size:14px;color:var(--dim)">Работаю официально как самозанятый, договор и чек — по запросу.</p>
+    </div>
+    <div class="c-links">
+      <a href="tel:+79012826132" class="c-link">
+        <span class="k">Телефон</span><span class="v">+7 (901) 282-61-32</span>
+      </a>
+      <a href="https://max.ru/se14860684_bot" class="c-link">
+        <span class="k">MAX</span><span class="v">@se14860684_bot</span>
+      </a>
+      <a href="mailto:bendikdanicx@yandex.ru" class="c-link">
+        <span class="k">Почта</span><span class="v">bendikdanicx@yandex.ru</span>
+      </a>
+      <a href="https://max.ru/se14860684_bot" class="c-link">
+        <span class="k">Демо</span><span class="v">Открыть бота в MAX</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span>MAX.BOTS — Данил, Иваново</span>
+    <span>Боты и мини-приложения в мессенджере MAX</span>
+  </div>
+</footer>
+
+</body>
+</html>
