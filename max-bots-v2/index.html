@@ -207,6 +207,48 @@
   }
   .demo-link:hover{transform:translateY(-2px);border-color:var(--accent-b)}
   .demo-link .grad-text{padding-right:.1em}
+
+  /* ---- блок мини-приложения ---- */
+  .app-show{
+    display:grid;grid-template-columns:1fr auto;gap:56px;align-items:center;
+    margin-top:64px;padding-top:52px;border-top:1px solid #e6e2ff;text-align:left;
+  }
+  .app-txt h3{font-size:clamp(24px,3vw,34px);letter-spacing:-.02em;margin:16px 0 0;line-height:1.2}
+  .app-txt p{color:var(--ink-2);font-size:16.5px;line-height:1.6;margin-top:16px;max-width:46ch}
+  .app-list{list-style:none;margin:20px 0 0;padding:0}
+  .app-list li{
+    position:relative;padding-left:26px;margin-bottom:10px;
+    font-size:15.5px;color:var(--ink-2);line-height:1.5;
+  }
+  .app-list li::before{
+    content:"";position:absolute;left:0;top:8px;width:14px;height:14px;border-radius:50%;
+    background:var(--grad);opacity:.9;
+  }
+  .app-list li::after{
+    content:"";position:absolute;left:4.5px;top:12px;width:5px;height:3px;
+    border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg);
+  }
+  .app-link{
+    display:inline-block;margin-top:26px;font-weight:600;font-size:16px;
+    color:var(--accent-a);text-decoration:none;
+    border-bottom:2px solid transparent;transition:border-color .18s,color .18s;
+  }
+  .app-link:hover{border-color:var(--accent-b);color:var(--accent-b)}
+  .app-hint{display:block;margin-top:12px;font-size:13px;color:var(--ink-muted)}
+  .app-phone{
+    position:relative;flex-shrink:0;
+    filter:drop-shadow(0 28px 56px rgba(74,134,255,.22));
+  }
+  .app-phone img{
+    display:block;width:290px;height:auto;border-radius:26px;
+    border:1px solid rgba(0,0,0,.07);
+  }
+  @media(max-width:900px){
+    .app-show{grid-template-columns:1fr;gap:38px;text-align:center;margin-top:48px;padding-top:40px}
+    .app-txt p{margin-left:auto;margin-right:auto}
+    .app-list{display:inline-block;text-align:left}
+    .app-phone img{width:250px;margin:0 auto}
+  }
   .demo small{display:block;margin-top:22px;color:var(--ink-muted);font-size:14px}
 
   /* ---------- steps ---------- */
@@ -472,6 +514,24 @@
         <p>Бот живой и работает в MAX прямо сейчас. Откройте на телефоне, нажмите «Начать» — там все три сценария. Это не видео и не скриншот.</p>
         <a class="demo-link" href="https://max.ru/se14860684_bot" target="_blank" rel="noopener"><span class="grad-text">max.ru/se14860684_bot</span></a>
         <small>Работает в приложении MAX для iOS, Android и в веб-версии.</small>
+
+        <div class="app-show">
+          <div class="app-txt">
+            <span class="eyebrow"><span class="dot" aria-hidden="true"></span>И это не всё</span>
+            <h3>Мини-приложение внутри MAX</h3>
+            <p>Житель открывает кабинет прямо в мессенджере: видит свои заявки со статусами, передаёт показания счётчиков, создаёт новую заявку в три касания. Не нужно звонить, искать сайт или ждать ответа диспетчера.</p>
+            <ul class="app-list">
+              <li>История заявок с номерами и статусами</li>
+              <li>Показания счётчиков с проверкой на ошибку</li>
+              <li>Новая заявка за 20 секунд</li>
+            </ul>
+            <a class="app-link" href="https://hundredgold.github.io/sites/dom-app/" target="_blank" rel="noopener">Открыть и потыкать →</a>
+            <small class="app-hint">Демо-версия. Внутри MAX подтягивает имя жителя и его данные.</small>
+          </div>
+          <div class="app-phone">
+            <img src="app-shot.png" alt="Мини-приложение «Личный кабинет» внутри MAX: список заявок со статусами" loading="lazy">
+          </div>
+        </div>
       </div>
     </div>
   </section>
