@@ -174,6 +174,22 @@
   .law-card p{color:var(--ink-2);font-size:17px;max-width:70ch;margin-top:14px}
   .law-card p strong{color:var(--ink)}
 
+  /* две даты требований */
+  .law-dates{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0 20px}
+  .law-date{
+    background:#fff;border:1px solid #e6e2ff;border-radius:12px;
+    padding:18px 20px;display:flex;flex-direction:column;gap:7px;
+  }
+  .law-date b{
+    font-size:15px;letter-spacing:-.01em;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .law-date span{font-size:14.5px;color:var(--ink-2);line-height:1.5}
+  @media(max-width:760px){
+    .law-dates{grid-template-columns:1fr}
+  }
+
   /* ---------- feature cards ---------- */
   .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:44px}
   .card{
@@ -415,11 +431,25 @@
   <section id="law" class="sec">
     <div class="wrap">
       <div class="law-card reveal">
-        <span class="eyebrow">С 1 сентября 2026</span>
-        <h2>Приём обращений жителей через MAX — с фиксацией ответа</h2>
-        <p>Управляющие организации обязаны организовать взаимодействие с собственниками через национальный мессенджер. Это не рекомендация — требование, и оно уже действует.</p>
-        <p><strong>Что это значит на практике:</strong> звонок на бумажке больше не считается. Нужен канал, где видно, кто, когда и с какой проблемой обратился — и что ему ответили.</p>
-        <p>Бот закрывает это за три дня. Житель пишет адрес и проблему, заявка с номером уходит диспетчеру, время фиксируется автоматически.</p>
+        <span class="eyebrow">Постановление Правительства РФ № 40 от 26.01.2026</span>
+        <h2>Взаимодействие с жителями через MAX — уже обязанность</h2>
+
+        <div class="law-dates">
+          <div class="law-date">
+            <b>с 17 февраля 2026</b>
+            <span>разместить в MAX контакты, график работы и телефон аварийно-диспетчерской службы</span>
+          </div>
+          <div class="law-date">
+            <b>с 1 сентября 2026</b>
+            <span>обеспечить взаимодействие с жителями через домовые чаты с фиксацией обращений</span>
+          </div>
+        </div>
+
+        <p>Это не рекомендация. Изменения внесены в Правила осуществления деятельности по управлению многоквартирными домами.</p>
+
+        <p><strong>Отказ организовать канал квалифицируется как нарушение лицензионных требований.</strong> Проверка приходит не от нас — от жилищной инспекции, по жалобе одного недовольного жителя.</p>
+
+        <p>Бот закрывает обе даты за три дня: житель пишет адрес и проблему, заявка с номером уходит диспетчеру, время фиксируется автоматически. График работы, контакты и телефон аварийной службы — отдельным разделом, как требует Приказ № 856/пр.</p>
       </div>
     </div>
   </section>
