@@ -62,7 +62,23 @@ h1{font-size:20px;margin:0 0 4px;letter-spacing:-.3px}
 .bottom a,.bottom button{flex:1;text-align:center;text-decoration:none;background:var(--card);
   border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:11px 8px;
   font-size:13px;font-family:inherit;cursor:pointer}
-.bottom a.primary{background:var(--acc);border-color:var(--acc);color:#04101f;font-weight:700}
+.bottom a.primary,.bottom button.primary{background:var(--acc);border-color:var(--acc);color:#04101f;font-weight:700}
+
+.warn{
+  background:#2a2316;border:1px solid #5c4520;color:#e8d48b;
+  border-radius:11px;padding:12px 15px;font-size:12.5px;line-height:1.5;
+  margin-bottom:12px;
+}
+.warn b{color:#ffd77a}
+
+.toast{
+  position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));
+  transform:translateX(-50%) translateY(14px);
+  background:var(--ok);color:#04120a;padding:12px 22px;border-radius:11px;
+  font-size:13.5px;font-weight:600;opacity:0;pointer-events:none;
+  transition:.26s;z-index:100;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
@@ -95,9 +111,16 @@ h1{font-size:20px;margin:0 0 4px;letter-spacing:-.3px}
 <div id="list"></div>
 <button class="more" id="more" style="display:none"></button>
 
+<div class="warn" id="warn">
+  <b>Заметки хранятся только в этом браузере.</b>
+  Почистишь кэш или откроешь с телефона — потеряешь всё.
+  Жми <b>«Сохранить в файл»</b> после каждого блока звонков.
+</div>
+
 <div class="bottom">
-  <a href="https://max.ru/se14860684_bot" class="primary">Открыть демо-бота</a>
-  <button id="reset">Сброс</button>
+  <button id="export" class="primary">💾 Сохранить в файл</button>
+  <button id="importBtn">📂 Загрузить</button>
+  <input type="file" id="importFile" accept=".json" style="display:none">
 </div>
 
 <script>
@@ -198,11 +221,73 @@ document.addEventListener("input", e=>{
 });
 
 $("more").addEventListener("click", ()=>{ limit += 20; render(); });
-$("reset").addEventListener("click", ()=>{
-  if(confirm("Сбросить все отметки и заметки?")){
-    store = {}; save(); limit = 15; render();
-  }
+
+// ---- сохранение в файл и загрузка ----
+$("export").addEventListener("click", ()=>{
+  const done = Object.keys(store).filter(k => store[k] && store[k].status).length;
+  const payload = {
+    savedAt: new Date().toISOString(),
+    totalMarked: done,
+    notes: store
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  const d = new Date();
+  const stamp = d.getFullYear() + "-" +
+    String(d.getMonth()+1).padStart(2,"0") + "-" +
+    String(d.getDate()).padStart(2,"0") + "_" +
+    String(d.getHours()).padStart(2,"0") + String(d.getMinutes()).padStart(2,"0");
+  a.download = "обзвон-" + stamp + ".json";
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  toast("Сохранено: " + done + " отмечено");
 });
+
+$("importBtn").addEventListener("click", ()=> $("importFile").click());
+
+$("importFile").addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try{
+      const data = JSON.parse(ev.target.result);
+      const notes = data.notes || data;
+      if(typeof notes !== "object") throw new Error("плохой формат");
+      const count = Object.keys(notes).length;
+      if(!confirm("Загрузить " + count + " записей? Текущие заметки будут заменены.")) return;
+      store = notes;
+      save(); render();
+      toast("Загружено: " + count + " записей");
+    }catch(err){
+      alert("Не получилось прочитать файл. Это точно тот JSON?");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+});
+
+// скрываем предупреждение, если отметок пока нет
+if(Object.keys(store).length > 0){
+  $("warn").style.display = "none";
+}
+
+// тост для трекера
+let _tt;
+function toast(msg){
+  let t = document.getElementById("toast");
+  if(!t){
+    t = document.createElement("div");
+    t.id = "toast";
+    t.className = "toast";
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(_tt);
+  _tt = setTimeout(()=>t.classList.remove("show"), 2600);
+}
 
 render();
 </script>
