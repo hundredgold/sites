@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Бот записи для стоматологии — демо</title>
+<style>
+:root{
+  --bg:#eef1f6;
+  --chat:#ffffff;
+  --ink:#111318;
+  --ink2:#5b6270;
+  --ink3:#9aa2b1;
+  --line:#e4e7ee;
+  --max:#4a86ff;
+  --max2:#7c5cff;
+  --grad:linear-gradient(135deg,#4a86ff,#7c5cff);
+  --bot:#f2f4f8;
+  --me:#4a86ff;
+  --ok:#12a150;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--ink);
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;height:100dvh;overflow:hidden;
+}
+
+/* ---------- шапка ---------- */
+.hdr{
+  background:#fff;border-bottom:1px solid var(--line);
+  padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;
+  padding-top:calc(12px + env(safe-area-inset-top));
+}
+.back{
+  width:30px;height:30px;border:0;background:transparent;font-size:20px;
+  color:var(--max);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.av{
+  width:40px;height:40px;border-radius:50%;background:var(--grad);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;
+}
+.who{flex:1;min-width:0}
+.who b{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who span{font-size:12px;color:var(--ok);display:flex;align-items:center;gap:5px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--ok)}
+
+/* ---------- чат ---------- */
+.chat{
+  flex:1;overflow-y:auto;padding:16px 14px 8px;
+  display:flex;flex-direction:column;gap:10px;
+  scroll-behavior:smooth;
+}
+.chat::-webkit-scrollbar{width:0}
+
+.msg{
+  max-width:82%;padding:10px 14px;border-radius:16px;
+  font-size:14.5px;line-height:1.42;white-space:pre-wrap;word-wrap:break-word;
+  animation:pop .22s ease;
+}
+@keyframes pop{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.msg.bot{
+  align-self:flex-start;background:var(--bot);color:var(--ink);
+  border-bottom-left-radius:5px;
+}
+.msg.me{
+  align-self:flex-end;background:var(--me);color:#fff;
+  border-bottom-right-radius:5px;
+}
+.msg b{font-weight:600}
+
+/* карточка подтверждения */
+.card{
+  align-self:flex-start;max-width:88%;background:#fff;border:1px solid var(--line);
+  border-radius:16px;border-bottom-left-radius:5px;padding:14px 16px;
+  animation:pop .22s ease;
+}
+.card .ttl{
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ok);margin-bottom:10px;
+}
+.card .row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:14px}
+.card .row span:first-child{color:var(--ink3)}
+.card .row span:last-child{font-weight:600;text-align:right}
+.card .num{
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+  font-family:ui-monospace,monospace;font-size:13px;color:var(--ink2);
+}
+
+/* печатает */
+.typing{
+  align-self:flex-start;background:var(--bot);border-radius:16px;border-bottom-left-radius:5px;
+  padding:14px 18px;display:flex;gap:4px;
+}
+.typing i{
+  width:7px;height:7px;border-radius:50%;background:var(--ink3);
+  animation:blink 1.3s infinite;
+}
+.typing i:nth-child(2){animation-delay:.18s}
+.typing i:nth-child(3){animation-delay:.36s}
+@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+
+/* ---------- кнопки ---------- */
+.kb{
+  padding:8px 14px 14px;display:flex;flex-direction:column;gap:7px;
+  flex-shrink:0;background:var(--bg);
+  padding-bottom:calc(14px + env(safe-area-inset-bottom));
+}
+.kb button{
+  width:100%;padding:13px 16px;border-radius:12px;
+  border:1.5px solid var(--line);background:#fff;color:var(--ink);
+  font:500 14.5px/1 inherit;font-family:inherit;cursor:pointer;
+  transition:.15s;text-align:left;
+}
+.kb button:active{transform:scale(.985)}
+.kb button.primary{
+  background:var(--grad);border-color:transparent;color:#fff;font-weight:600;
+}
+.kb button.ghost{
+  background:transparent;border-color:transparent;color:var(--ink3);
+  font-size:13px;text-align:center;padding:8px;
+}
+.kb button:hover{border-color:#c8d0e0}
+
+/* плашка «это демо» */
+.demo-note{
+  background:#fff8e6;border-bottom:1px solid #f0e2bd;color:#8a6a1a;
+  font-size:11.5px;padding:7px 14px;text-align:center;font-weight:600;
+  flex-shrink:0;
+}
+</style>
+</head>
+<body>
+
+<div class="demo-note">ДЕМО · так пациент записывается через MAX</div>
+
+<header class="hdr">
+  <button class="back" aria-label="Назад">‹</button>
+  <div class="av" id="av">С</div>
+  <div class="who">
+    <b id="clinicName">Стоматология</b>
+    <span><i class="dot"></i>бот · отвечает сразу</span>
+  </div>
+</header>
+
+<div class="chat" id="chat"></div>
+<div class="kb" id="kb"></div>
+
+<script>
+/* ============================================================
+   Название клиники можно подставить в ссылке:
+   ...?c=Клинио%20Дента
+   ============================================================ */
+const params = new URLSearchParams(location.search);
+const CLINIC = params.get('c') || 'Стоматология';
+document.getElementById('clinicName').textContent = CLINIC;
+document.getElementById('av').textContent = CLINIC.trim()[0].toUpperCase();
+
+const chat = document.getElementById('chat');
+const kb = document.getElementById('kb');
+
+/* ---------- данные клиники (демо) ---------- */
+const SERVICES = [
+  {id:'lechenie', name:'Лечение зуба', price:'от 3 500 ₽', dur:'60 мин'},
+  {id:'gigiena',  name:'Проф. гигиена', price:'от 4 000 ₽', dur:'45 мин'},
+  {id:'udalenie', name:'Удаление зуба', price:'от 2 500 ₽', dur:'30 мин'},
+  {id:'koronka',  name:'Коронка', price:'от 18 000 ₽', dur:'90 мин'},
+  {id:'konsult',  name:'Консультация', price:'бесплатно', dur:'20 мин'},
+];
+
+const DOCTORS = [
+  {id:'any', name:'Любой свободный'},
+  {id:'1', name:'Смирнова А. В.', spec:'терапевт'},
+  {id:'2', name:'Ковалёв Д. С.', spec:'хирург'},
+  {id:'3', name:'Ильина М. П.', spec:'ортопед'},
+];
+
+const TIMES = ['09:00','10:30','12:00','14:00','15:30','17:00','18:30'];
+
+/* ---------- состояние ---------- */
+let state = {step:'start', service:null, doctor:null, day:null, time:null};
+
+/* ---------- утилиты ---------- */
+function scrollDown(){
+  requestAnimationFrame(()=>{ chat.scrollTop = chat.scrollHeight; });
+}
+
+function botSay(text, delay=650){
+  return new Promise(res=>{
+    const t = document.createElement('div');
+    t.className = 'typing';
+    t.innerHTML = '<i></i><i></i><i></i>';
+    chat.appendChild(t); scrollDown();
+    setTimeout(()=>{
+      t.remove();
+      const m = document.createElement('div');
+      m.className = 'msg bot';
+      m.innerHTML = text.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+      chat.appendChild(m); scrollDown(); res();
+    }, delay);
+  });
+}
+
+function meSay(text){
+  const m = document.createElement('div');
+  m.className = 'msg me';
+  m.textContent = text;
+  chat.appendChild(m); scrollDown();
+}
+
+function showCard(rows, footer){
+  const c = document.createElement('div');
+  c.className = 'card';
+  c.innerHTML = `<div class="ttl">Запись подтверждена</div>` +
+    rows.map(([k,v])=>`<div class="row"><span>${k}</span><span>${v}</span></div>`).join('') +
+    (footer ? `<div class="num">${footer}</div>` : '');
+  chat.appendChild(c); scrollDown();
+}
+
+function setButtons(list){
+  kb.innerHTML = '';
+  list.forEach(b=>{
+    const el = document.createElement('button');
+    el.textContent = b.label;
+    if(b.style) el.className = b.style;
+    el.onclick = b.onClick;
+    kb.appendChild(el);
+  });
+}
+
+function clearButtons(){ kb.innerHTML = ''; }
+
+/* ---------- сценарии ---------- */
+async function start(){
+  chat.innerHTML = '';
+  state = {step:'start', service:null, doctor:null, day:null, time:null};
+  await botSay(`Здравствуйте! Это **${CLINIC}**.\n\nЯ запишу вас на приём за минуту — без звонков и ожидания на линии.\n\nЧто вас беспокоит?`);
+  mainMenu();
+}
+
+function mainMenu(){
+  setButtons([
+    {label:'🦷 Записаться на приём', style:'primary', onClick:()=>pickService()},
+    {label:'😖 Болит зуб срочно', onClick:()=>urgent()},
+    {label:'💰 Цены и услуги', onClick:()=>prices()},
+    {label:'📍 Адрес и график', onClick:()=>about()},
+  ]);
+}
+
+async function urgent(){
+  clearButtons();
+  meSay('Болит зуб срочно');
+  await botSay(`Понял, это срочно.\n\nПостараюсь найти ближайшее окно сегодня. Если боль нестерпимая — звоните сразу: **+7 (4932) 66-66-96**.\n\nДавайте запишу:`);
+  await pickService(true);
+}
+
+async function pickService(urgentMode=false){
+  clearButtons();
+  state.urgent = urgentMode;
+  if(!urgentMode) meSay('Записаться на приём');
+  await botSay('Выберите услугу:');
+  setButtons(SERVICES.map(s=>({
+    label:`${s.name} — ${s.price}`,
+    onClick:()=>chooseService(s)
+  })).concat([{label:'← В начало', style:'ghost', onClick:start}]));
+}
+
+async function chooseService(s){
+  clearButtons();
+  meSay(s.name);
+  state.service = s;
+  await botSay(`**${s.name}**\n${s.price} · ${s.dur}\n\nК какому врачу?`);
+  setButtons(DOCTORS.map(d=>({
+    label: d.spec ? `${d.name} · ${d.spec}` : d.name,
+    onClick:()=>chooseDoctor(d)
+  })).concat([{label:'← Назад', style:'ghost', onClick:()=>pickService(state.urgent)}]));
+}
+
+async function chooseDoctor(d){
+  clearButtons();
+  meSay(d.name);
+  state.doctor = d;
+  await botSay('На какой день удобно?');
+  const days = [
+    {label:'Сегодня', val:'сегодня'},
+    {label:'Завтра', val:'завтра'},
+    {label:'Послезавтра', val:'послезавтра'},
+  ];
+  setButtons(days.map(x=>({
+    label:x.label, onClick:()=>chooseDay(x.val)
+  })).concat([{label:'← Назад', style:'ghost', onClick:()=>chooseService(state.service)}]));
+}
+
+async function chooseDay(day){
+  clearButtons();
+  meSay(day);
+  state.day = day;
+  await botSay(`Свободное время на **${day}**:`);
+  setButtons(TIMES.map(t=>({
+    label:t, onClick:()=>chooseTime(t)
+  })).concat([{label:'← Другой день', style:'ghost', onClick:()=>chooseDoctor(state.doctor)}]));
+}
+
+async function chooseTime(time){
+  clearButtons();
+  meSay(time);
+  state.time = time;
+  await botSay('Оставьте номер телефона — администратор подтвердит запись.\n\nМожно написать вручную или нажать кнопку ниже.');
+  setButtons([
+    {label:'📱 Отправить мой номер', style:'primary', onClick:()=>confirmPhone('+7 (901) 282-61-32')},
+    {label:'← Назад', style:'ghost', onClick:()=>chooseDay(state.day)},
+  ]);
+}
+
+async function confirmPhone(phone){
+  clearButtons();
+  meSay(phone);
+  await botSay('Записываю…', 500);
+
+  const num = 'З-' + String(Math.floor(1000 + Math.random()*9000));
+  showCard([
+    ['Услуга', state.service.name],
+    ['Врач', state.doctor.name],
+    ['Дата', state.day],
+    ['Время', state.time],
+    ['Телефон', phone],
+  ], `Номер записи: ${num}`);
+
+  await botSay(`Готово! Ждём вас **${state.day} в ${state.time}**.\n\nАдрес: г. Иваново, ул. Радищева, 20А.\n\nЗа сутки я напомню о визите — ничего запоминать не нужно.`);
+
+  // демонстрация напоминания
+  setTimeout(()=>{
+    const m = document.createElement('div');
+    m.className='msg bot';
+    m.innerHTML = `<b>Напоминание</b>\n\nЗавтра в ${state.time} у вас приём в ${CLINIC}.\n\nЕсли планы изменились — нажмите «Перенести».`;
+    chat.appendChild(m); scrollDown();
+    setButtons([
+      {label:'✅ Приду', style:'primary', onClick:()=>answerReminder('Приду')},
+      {label:'📅 Перенести', onClick:()=>answerReminder('Перенести')},
+      {label:'❌ Отменить', onClick:()=>answerReminder('Отменить')},
+    ]);
+  }, 2600);
+
+  state.step = 'done';
+}
+
+async function answerReminder(what){
+  clearButtons();
+  meSay(what);
+  if(what === 'Приду'){
+    await botSay('Отлично, ждём вас! Напомню за 2 часа.');
+  } else if(what === 'Перенести'){
+    await botSay('Без проблем. Выберите новый день:');
+    setButtons([
+      {label:'Завтра', onClick:()=>chooseDay('завтра')},
+      {label:'Послезавтра', onClick:()=>chooseDay('послезавтра')},
+      {label:'← В начало', style:'ghost', onClick:start},
+    ]);
+    return;
+  } else {
+    await botSay('Запись отменена. Если понадобится — я на связи.');
+  }
+  setButtons([
+    {label:'← В начало', style:'ghost', onClick:start},
+  ]);
+}
+
+async function prices(){
+  clearButtons();
+  meSay('Цены и услуги');
+  const list = SERVICES.map(s=>`**${s.name}** — ${s.price}`).join('\n');
+  await botSay(`Актуальные цены:\n\n${list}\n\nТочная стоимость — после осмотра. Консультация бесплатная.`);
+  setButtons([
+    {label:'🦷 Записаться', style:'primary', onClick:()=>pickService()},
+    {label:'← В начало', style:'ghost', onClick:start},
+  ]);
+}
+
+async function about(){
+  clearButtons();
+  meSay('Адрес и график');
+  await botSay(`**Как нас найти**\n\ng. Иваново, ул. Радищева, 20А\n\n**График**\nПн–Пт: 09:00–20:00\nСб: 10:00–17:00\nВс: выходной\n\n**Телефон**\n+7 (4932) 66-66-96\n\nЕсли болит срочно — звоните, примем в день обращения.`);
+  setButtons([
+    {label:'🦷 Записаться', style:'primary', onClick:()=>pickService()},
+    {label:'← В начало', style:'ghost', onClick:start},
+  ]);
+}
+
+/* ---------- запуск ---------- */
+start();
+</script>
+</body>
+</html>
