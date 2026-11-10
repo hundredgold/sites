@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Северный контур — концепт сайта каркасных домов</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="demo.js" defer></script>
+</head>
+<body>
+  <header class="masthead shell">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 46 46" width="42" height="42" fill="none" aria-hidden="true">
+        <path d="M5 34 23 9l18 25M14 34l9-13 9 13M5 34h36" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Северный контур
+    </a>
+    <a class="nav-link" href="#projects">Проекты домов</a>
+    <span class="demo-label">Концепт сайта</span>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-inner shell">
+        <div class="hero-copy">
+          <h1 id="page-title">Каркасные дома для жизни за городом</h1>
+          <p>Сравните проекты по площади и планировке. Выберите дом, чтобы запросить смету под свой участок.</p>
+          <a class="button button-bright" href="#projects">Посмотреть проекты</a>
+        </div>
+        <figure class="hero-figure">
+          <img src="assets/bor.webp" alt="Треугольный деревянный дом с террасой среди сосен" width="1450" height="967" fetchpriority="high">
+          <figcaption>Бор 68 <span>Проект с террасой</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="projects shell" id="projects" aria-labelledby="projects-title">
+      <div class="section-intro">
+        <h2 id="projects-title">Проекты домов</h2>
+        <p>Выбранный проект сразу появится в заявке.</p>
+      </div>
+      <div class="project-grid">
+        <article class="project">
+          <img src="assets/bor.webp" alt="Фасад дома с треугольным остеклением" width="1450" height="967" loading="lazy">
+          <div class="project-detail">
+            <div><h3>Бор 68</h3><p>68 м², антресоль и терраса</p></div>
+            <button class="button button-outline" type="button" data-project="Бор 68" aria-label="Запросить смету для проекта Бор 68">Запросить смету</button>
+          </div>
+        </article>
+        <article class="project">
+          <img src="assets/polyana.webp" alt="Компактный деревянный дом на поляне" width="1450" height="967" loading="lazy">
+          <div class="project-detail">
+            <div><h3>Поляна 42</h3><p>42 м², один этаж и крыльцо</p></div>
+            <button class="button button-outline" type="button" data-project="Поляна 42" aria-label="Запросить смету для проекта Поляна 42">Запросить смету</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer">
+    <span>Северный контур</span>
+    <small>Концепт для портфолио. Проекты условные, фотографии иллюстративные.</small>
+  </footer>
+
+  <dialog id="estimate" aria-labelledby="estimate-title">
+    <button class="close" type="button" aria-label="Закрыть">×</button>
+    <div id="estimate-input">
+      <h2 id="estimate-title">Запросить смету</h2>
+      <p class="selected" id="selected-project"></p>
+      <p id="demo-note">Тестовая заявка с условными контактами. Результат появится в этом окне.</p>
+      <form id="estimate-form" aria-describedby="demo-note">
+        <label for="region">Где находится участок?</label>
+        <select id="region" name="region" required autofocus>
+          <option value="">Выберите регион</option>
+          <option>Ярославская область</option>
+          <option>Костромская область</option>
+          <option>Другой регион</option>
+        </select>
+        <button class="button button-dark" type="submit">Проверить заявку</button>
+      </form>
+    </div>
+    <div id="estimate-result" hidden>
+      <h2 id="result-title" tabindex="-1">Тестовая заявка</h2>
+      <p class="result-note">Так выглядит запись для менеджера.</p>
+      <dl class="receipt">
+        <div><dt>Проект</dt><dd id="receipt-project"></dd></div>
+        <div><dt>Участок</dt><dd id="receipt-region"></dd></div>
+        <div><dt>Контакт</dt><dd>Тестовый клиент</dd></div>
+      </dl>
+      <p class="result-note">Запись показана локально. Доставка в почту или CRM подключается при запуске сайта.</p>
+      <button class="button button-dark" id="finish" type="button">Вернуться к проектам</button>
+    </div>
+  </dialog>
+</body>
+</html>
